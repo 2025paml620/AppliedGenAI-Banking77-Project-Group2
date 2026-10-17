@@ -1,1 +1,1 @@
-"# AppliedGenAI-Banking77-Project-Group2" 
+"# AppliedGenAI-Banking77-Project-Group2" Readme placeholder
