@@ -2,19 +2,22 @@
 """Reusable utilities for loading and preparing the Banking77 dataset."""
 
 from pathlib import Path
-
 import pandas as pd
 from datasets import DatasetDict, load_dataset
 
-
+# Identify the dataset repository and pin a specific revision for reproducibility.
 DATASET_ID = "PolyAI/banking77"
+DATASET_REVISION = "90d4e2ee5521c04fc1488f065b8b083658768c57"
 
 
 def load_banking77() -> DatasetDict:
-    """Load Banking77 with its official training and test splits."""
-
-    # Load the public dataset; its repository uses a custom loading script.
-    return load_dataset(DATASET_ID, trust_remote_code=True)
+    """Load Banking77 from the explicitly pinned repository revision."""
+    # Pin the revision so future runs do not silently use a newer dataset version.
+    return load_dataset(
+        DATASET_ID,
+        revision=DATASET_REVISION,
+        trust_remote_code=True,
+        )
 
 
 def create_evaluation_sample(

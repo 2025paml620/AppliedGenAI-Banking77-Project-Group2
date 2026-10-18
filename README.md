@@ -25,6 +25,8 @@ Use this section as the main entry point for navigating the project.
 | [Evaluation Preparation Script](scripts/prepare_evaluation_data.py) | Generate the reproducible evaluation sample |
 | [Requirements](requirements.txt) | Review Python dependencies |
 | [Current Progress](#11-current-progress) | Check completed and pending work |
+| [Problem Definition](reports/problem_definition.md) | Target user, input/output contract, and safety boundaries |
+| [Dataset Notes](data/DATASET_NOTES.md) | Dataset statistics, label mapping, preprocessing, evaluation sampling, and leakage prevention |
 
 ### Project workstreams
 
@@ -238,7 +240,8 @@ AppliedGenAI-Banking77-Project-Group2/
 ├── .gitignore
 ├── config/
 ├── data/
-│   └── evaluation_sample.csv
+│   ├── evaluation_sample.csv
+│   └── DATASET_NOTES.md
 ├── notebooks/
 │   └── data_exploration.ipynb
 ├── src/
@@ -286,8 +289,13 @@ The team will agree on shared interfaces and evaluation conventions before integ
 - [x] Intent counts inspected for the official splits.
 - [x] Balanced evaluation sample generated and saved.
 - [x] Evaluation CSV verified: 231 rows, 77 intents, 3 examples per intent, and no missing values.
-- [ ] Evaluation protocol documented and reviewed by the team.
-- [ ] Dataset revision and dependency versions recorded for reproducibility.
+- [x] Problem definition and input/output contract documented in `reports/problem_definition.md`.
+- [x] Dataset inspection and preprocessing notes documented in `data/DATASET_NOTES.md`.
+- [x] Evaluation protocol documented in `reports/evaluation_protocol.md`.
+- [x] Evaluation metrics, comparison rules, leakage prevention, reference-file fields, and limitations specified.
+- [ ] Evaluation protocol reviewed and approved by the team.
+- [x] Dataset revision and dependency versions recorded for strict reproducibility.
+- [x] Controlled regeneration check confirms the generated sample matches the preserved CSV.
 
 ### Model and application development
 
@@ -305,6 +313,8 @@ The team will agree on shared interfaces and evaluation conventions before integ
 
 - [Banking77 dataset on Hugging Face](https://huggingface.co/datasets/PolyAI/banking77)
 - [Qwen2.5 model family on Hugging Face](https://huggingface.co/Qwen)
+- [Problem Definition](reports/problem_definition.md)
+- [Dataset Notes](data/DATASET_NOTES.md)
 - [Evaluation Protocol](reports/evaluation_protocol.md)
 - [Data Exploration Notebook](notebooks/data_exploration.ipynb)
 - [Dataset Preparation Module](src/data/dataset.py)
