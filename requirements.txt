@@ -1,0 +1,7 @@
+datasets==3.6.0
+pandas
+numpy
+scikit-learn
+matplotlib
+jupyter
+ipykernel
