@@ -1,0 +1,7 @@
+model_id: Qwen/Qwen2.5-1.5B-Instruct
+seed: 42
+max_new_tokens: 140
+prompt_variants: [zero_shot, few_shot, role_based, constrained]
+decoding_variants: [greedy, temperature_0_2, temperature_0_7, top_p_0_9]
+repetitions: 3
+# Evaluation inputs should come from Part 1 held-out samples.
