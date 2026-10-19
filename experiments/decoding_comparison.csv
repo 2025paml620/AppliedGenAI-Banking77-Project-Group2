@@ -1,0 +1,129 @@
+sample_id,query,prompt_variant,decoding,response,safety_status,safety_reasons,repetition,parameters
+test_02855,I need help activating my new card.,constrained,greedy,"Hello! To activate your new card, please follow these steps:
+
+1. Log into your online banking account using your username and password.
+2. Navigate to the ""My Account"" section and click on ""Card Activation.""
+3. Follow the prompts to complete the activation process, which may include entering personal information and verifying security questions.
+4. Once activated, you can use your new card for transactions.
+
+If you encounter any issues during this process, feel free to contact our customer service team for assistance.",allowed,,1,"{""do_sample"": false}"
+test_02855,I need help activating my new card.,constrained,greedy,"Hello! To activate your new card, please follow these steps:
+
+1. Log into your online banking account using your username and password.
+2. Navigate to the ""My Account"" section and click on ""Card Activation.""
+3. Follow the prompts to complete the activation process, which may include entering personal information and verifying security questions.
+4. Once activated, you can use your new card for transactions.
+
+If you encounter any issues during this process, feel free to contact our customer service team for assistance.",allowed,,2,"{""do_sample"": false}"
+test_02855,I need help activating my new card.,constrained,greedy,"Hello! To activate your new card, please follow these steps:
+
+1. Log into your online banking account using your username and password.
+2. Navigate to the ""My Account"" section and click on ""Card Activation.""
+3. Follow the prompts to complete the activation process, which may include entering personal information and verifying security questions.
+4. Once activated, you can use your new card for transactions.
+
+If you encounter any issues during this process, feel free to contact our customer service team for assistance.",allowed,,3,"{""do_sample"": false}"
+test_02855,I need help activating my new card.,constrained,temperature_0_2,"Hello! To activate your new card, please follow these steps:
+
+1. Log into your online banking account using your credentials.
+2. Navigate to the ""Cards"" section or similar function.
+3. Locate your newly activated card and click on its activation link.
+4. Follow any prompts provided during the activation process.
+5. Once activated, you can use your card as usual.
+
+If you encounter any issues, feel free to contact our customer service team for further assistance.",allowed,,1,"{""do_sample"": true, ""temperature"": 0.2, ""top_p"": 1.0}"
+test_02855,I need help activating my new card.,constrained,temperature_0_2,"Hello! To activate your new card, please visit our online portal at [insert link]. Follow the prompts to complete the activation process. If you have any questions along the way, feel free to reach out.",allowed,,2,"{""do_sample"": true, ""temperature"": 0.2, ""top_p"": 1.0}"
+test_02855,I need help activating my new card.,constrained,temperature_0_2,"Hello! To activate your new card, please follow these steps:
+
+1. Go to the [Bank's Official Website] or download their app on your device.
+2. Log in using your credentials.
+3. Navigate to the ""My Account"" section.
+4. Look for an option labeled ""Card Activation.""
+5. Follow the prompts to complete the activation process.
+6. Once activated, you can use your card as usual.
+
+If you encounter any issues during this process, feel free to contact our customer service team for assistance.",allowed,,3,"{""do_sample"": true, ""temperature"": 0.2, ""top_p"": 1.0}"
+test_02855,I need help activating my new card.,constrained,temperature_0_7,"Hello! To activate your new card, please visit our online portal or contact our customer service team. They can guide you through the process. If you prefer, you can also call us at [phone number]. For more information, visit our website at [website URL] or send us a message via SMS or email. We're here to assist you!",allowed,,1,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 1.0}"
+test_02855,I need help activating my new card.,constrained,temperature_0_7,"Hello! To activate your new card, please follow these simple steps:
+
+1. Log into your online banking portal or go to your local branch.
+2. Navigate to the ""Card Activation"" section.
+3. Follow the prompts to complete any necessary verification processes (like entering your personal information).
+4. Once activated, you should receive your new card in the mail shortly.
+
+If you encounter any issues, don't hesitate to contact our customer service team directly for further assistance. Have a great day!
+
+Next Steps:
+- Check your email for activation instructions.
+- Visit a nearby branch if needed.",allowed,,2,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 1.0}"
+test_02855,I need help activating my new card.,constrained,temperature_0_7,"Hello! If you're trying to activate your new card, please visit your local branch or log into your online account where you can start the activation process. Typically, you'll need your new physical card, any required personal information like ID, and might also be prompted to link your existing accounts. Once activated, contact us here if you encounter any issues.",allowed,,3,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 1.0}"
+test_02855,I need help activating my new card.,constrained,top_p_0_9,"Hello! To activate your new card, please visit our online portal and follow these steps:
+
+1. Log in using your credentials.
+2. Navigate to the ""My Account"" section.
+3. Click on ""Card Activation.""
+4. Complete any required verification steps provided there.
+5. Once activated, you can log into your account securely.
+
+Please ensure all information is correct before proceeding. If you encounter any issues, contact our Customer Service team directly.",allowed,,1,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 0.9}"
+test_02855,I need help activating my new card.,constrained,top_p_0_9,"Hello! To activate your new card:
+
+1. Log into your online banking account if you have one.
+2. Navigate to the ""Cards"" or ""Debit/Credit Cards"" section.
+3. Locate your newly received card information.
+4. Follow any prompts to complete the activation process.
+5. If prompted, enter personal identification details as required by your bank's guidelines.
+6. Once activated, you can use your card for transactions.
+
+If you encounter issues during this process, please contact our customer service for further assistance.",allowed,,2,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 0.9}"
+test_02855,I need help activating my new card.,constrained,top_p_0_9,"Hello! Thank you for reaching out. To activate your new card, please visit our online portal at [insert website link] and follow the activation process there. If you encounter any issues, feel free to contact our customer service team. Have a great day!",allowed,,3,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 0.9}"
+test_00480,how old do i need to be to get an account for myself,constrained,greedy,"To open an account on your own, you typically need to be at least 18 years old. Visit your local branch or use online banking services to apply.",allowed,,1,"{""do_sample"": false}"
+test_00480,how old do i need to be to get an account for myself,constrained,greedy,"To open an account on your own, you typically need to be at least 18 years old. Visit your local branch or use online banking services to apply.",allowed,,2,"{""do_sample"": false}"
+test_00480,how old do i need to be to get an account for myself,constrained,greedy,"To open an account on your own, you typically need to be at least 18 years old. Visit your local branch or use online banking services to apply.",allowed,,3,"{""do_sample"": false}"
+test_00480,how old do i need to be to get an account for myself,constrained,temperature_0_2,"To open an account on your own, you typically need to be at least 18 years old in most countries. Visit your local branch or use online banking services to apply.",allowed,,1,"{""do_sample"": true, ""temperature"": 0.2, ""top_p"": 1.0}"
+test_00480,how old do i need to be to get an account for myself,constrained,temperature_0_2,"To open a bank account on your own, you generally need to be at least 18 years old in most countries. However, some banks may have stricter requirements. It's best to check directly with your preferred bank to confirm their specific eligibility criteria. They can provide accurate information based on your location and bank details.",allowed,,2,"{""do_sample"": true, ""temperature"": 0.2, ""top_p"": 1.0}"
+test_00480,how old do i need to be to get an account for myself,constrained,temperature_0_2,"To open an account on your own, you typically need to be at least 18 years old in most countries. Check with your specific bank for any age restrictions they may have.",allowed,,3,"{""do_sample"": true, ""temperature"": 0.2, ""top_p"": 1.0}"
+test_00480,how old do i need to be to get an account for myself,constrained,temperature_0_7,"Hello! To open an account in your name, you typically need to be at least 18 years old in most countries. You'll want to visit a local branch of your chosen bank directly to apply, as each institution may have specific requirements. Good luck!",allowed,,1,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 1.0}"
+test_00480,how old do i need to be to get an account for myself,constrained,temperature_0_7,"To open an account on your own, you generally need to be at least 18 years old in many countries and jurisdictions where banks operate. However, some banks may have requirements based on residency or additional documentation like proof of ID. For specific details, contact your preferred bank directly. If under 18, consider joint accounts or using a parent's information until reaching majority age.",allowed,,2,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 1.0}"
+test_00480,how old do i need to be to get an account for myself,constrained,temperature_0_7,"To open an account on your own, you typically need to meet certain age requirements set by your local bank's regulations. Generally, you must be a minor of legal age (typically between 18 and 25 years) to open and manage your own bank accounts independently. Contact your bank directly for their specific guidelines and any additional required documentation or proof of ID.
+
+If you're under 18 and looking to open an account, consider having a parent co-sign or obtaining parental consent if applicable. Your bank will provide detailed information regarding the minimum age requirement based on your country and state/province laws.",allowed,,3,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 1.0}"
+test_00480,how old do i need to be to get an account for myself,constrained,top_p_0_9,"To open an account on your own, you generally need to be at least 18 years old. However, some banks may require older age limits like 21 due to legal requirements. Contact your preferred bank directly to confirm specific eligibility criteria.",allowed,,1,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 0.9}"
+test_00480,how old do i need to be to get an account for myself,constrained,top_p_0_9,"To open an account on your own, you typically need to be at least 18 years old in most places. Check with your local bank or financial institution for specific requirements in your area. They can provide accurate details about age restrictions and any necessary documentation.",allowed,,2,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 0.9}"
+test_00480,how old do i need to be to get an account for myself,constrained,top_p_0_9,"To open an account on your own, you generally need to be at least 18 years of age or older. It's best to visit a branch or use online banking services offered by your chosen bank to apply directly. They can provide more specific requirements based on your location and bank policy.",allowed,,3,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 0.9}"
+test_02969,Can I use Apple Pay to top up?,constrained,greedy,"Yes, you can use Apple Pay to top up your account. Go to the Apple Wallet app on your iPhone, select ""Add Card,"" then choose ""Apple Pay."" Follow the prompts to complete the setup. Once set up, you can use Apple Pay to make payments directly from your account balance.",allowed,,1,"{""do_sample"": false}"
+test_02969,Can I use Apple Pay to top up?,constrained,greedy,"Yes, you can use Apple Pay to top up your account. Go to the Apple Wallet app on your iPhone, select ""Add Card,"" then choose ""Apple Pay."" Follow the prompts to complete the setup. Once set up, you can use Apple Pay to make payments directly from your account balance.",allowed,,2,"{""do_sample"": false}"
+test_02969,Can I use Apple Pay to top up?,constrained,greedy,"Yes, you can use Apple Pay to top up your account. Go to the Apple Wallet app on your iPhone, select ""Add Card,"" then choose ""Apple Pay."" Follow the prompts to complete the setup. Once set up, you can use Apple Pay to make payments directly from your account balance.",allowed,,3,"{""do_sample"": false}"
+test_02969,Can I use Apple Pay to top up?,constrained,temperature_0_2,"Yes, you can use Apple Pay to top up your account. Go to the Apple Wallet app on your iPhone, select ""Add Card,"" then choose ""Apple Pay."" Follow the prompts to complete the setup. Once set up, simply tap Apple Pay when making a purchase using your credit/debit card linked to your Apple ID.",allowed,,1,"{""do_sample"": true, ""temperature"": 0.2, ""top_p"": 1.0}"
+test_02969,Can I use Apple Pay to top up?,constrained,temperature_0_2,"Hello! Yes, you can use Apple Pay to top up your account. Go to the Apple Wallet app on your iPhone, select ""Top Up,"" then choose the payment method (Apple Card) and enter your details. Once done, follow the prompts to complete the process. If you need further assistance, please contact our customer service team.",allowed,,2,"{""do_sample"": true, ""temperature"": 0.2, ""top_p"": 1.0}"
+test_02969,Can I use Apple Pay to top up?,constrained,temperature_0_2,"Yes, you can use Apple Pay to top up your account. Go to the Apple Wallet app on your iPhone, select ""Add Card,"" then choose ""Apple Pay."" Follow the prompts to complete the setup. Once set up, you can use Apple Pay for purchases directly from the app.",allowed,,3,"{""do_sample"": true, ""temperature"": 0.2, ""top_p"": 1.0}"
+test_02969,Can I use Apple Pay to top up?,constrained,temperature_0_7,"Hello! To use Apple Pay to top up on your bank account:
+
+1. Open your bank's mobile app on your phone.
+2. Navigate to the ""My Account"" section.
+3. Look for an option to add cards.
+4. Sign in using your bank credentials.
+5. Follow the prompts to link your Apple ID if it isn't already linked.
+6. Confirm the payment method setup.
+
+Your Apple Pay balance will be tied to this account now. Enjoy making purchases!
+
+Please log out of any other apps using this same device before proceeding. Safe browsing!",allowed,,1,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 1.0}"
+test_02969,Can I use Apple Pay to top up?,constrained,temperature_0_7,"Yes, you can use Apple Pay for top-ups. Open the Wallet app on your iPhone, tap ""Top Up,"" then select ""Apple Pay"" under the list of payment methods. Follow the prompts to complete the process using your Apple ID.",allowed,,2,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 1.0}"
+test_02969,Can I use Apple Pay to top up?,constrained,temperature_0_7,"Hello! Yes, you can use Apple Pay to top up your account if you have linked an eligible credit card. Go to the Apple App Store on your mobile device, select ""Settings,"" then ""Wallet & Passbook."" Choose the Credit Cards section, find the appropriate card, tap ""Top Up"" and follow the prompts. If you don't see options here, check that your wallet is properly set up and try again. Should you encounter issues, reach out to Apple Support directly or contact your bank's customer service for assistance.",allowed,,3,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 1.0}"
+test_02969,Can I use Apple Pay to top up?,constrained,top_p_0_9,"Hello! To use Apple Pay to top up your account, follow these steps:
+1. Open your Apple Wallet app on your iPhone.
+2. Tap ""Add Card"" to add your bank's credit/debit card information.
+3. Enter your card details and select ""Save.""
+4. Once saved, you can use the card to pay for purchases using Apple Pay.
+If you encounter any issues, please contact your bank’s customer service for further assistance.",allowed,,1,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 0.9}"
+test_02969,Can I use Apple Pay to top up?,constrained,top_p_0_9,"Yes, you can use Apple Pay to top up. Go to the app store on your iPhone, find ""Apple Pay,"" and tap ""Add Card."" Follow the prompts to add your credit/debit card. Once added, you'll be able to use it to top up your mobile plan directly within the app.",allowed,,2,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 0.9}"
+test_02969,Can I use Apple Pay to top up?,constrained,top_p_0_9,"Hello! To use Apple Pay for top-up on our service, please follow these steps:
+
+1. Ensure you have enabled Apple Pay on your device.
+2. Open the app that allows you to make payments (e.g., PayPal).
+3. Select ""Top Up"" from the menu.
+4. Follow the prompts to complete the payment using your Apple Card balance or credit limit.
+5. Once topped up, your new balance will be reflected immediately within the app.
+
+If you encounter any issues, feel free to contact our support team for assistance.",allowed,,3,"{""do_sample"": true, ""temperature"": 0.7, ""top_p"": 0.9}"
