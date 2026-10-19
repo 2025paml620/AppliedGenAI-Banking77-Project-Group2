@@ -321,3 +321,152 @@ The team will agree on shared interfaces and evaluation conventions before integ
 - [Evaluation Preparation Script](scripts/prepare_evaluation_data.py)
 
 External links are provided for reference. Model implementation details and experimental results will be documented as the corresponding work is completed.
+
+## 7. Part 2 — Qwen LLM Baseline, Prompt Engineering and Decoding
+
+### 7.1 Objective
+
+Part 2 implements a pretrained causal language model for the BANKING77 banking customer-support assistant.
+
+The objectives are to:
+
+- Establish a baseline using Qwen2.5-1.5B-Instruct.
+- Compare zero-shot, few-shot, role-based and constraint-based prompts.
+- Compare greedy decoding, temperature sampling and top-p sampling.
+- Record generated responses and experiment configurations.
+- Evaluate response relevance, clarity, safety and consistency.
+- Provide reusable LLM generation functions for subsequent project stages.
+
+7.12 Safety Guardrails
+
+The BANKING77 Qwen assistant implements input validation, safety-aware prompting, and post-generation output validation.
+
+The guardrails aim to prevent disclosure or solicitation of sensitive banking credentials, unsupported claims of completed transactions, and unsafe financial guarantees.
+
+Unsafe responses are replaced with a predefined safe fallback. Guardrail decisions are recorded using safety_status and safety_reasons fields.
+
+The implementation is rule-based and intended for educational evaluation. It does not guarantee detection of all unsafe outputs, sensitive information, or prompt-injection attempts.
+
+All E1, E2, and E3 experiments use the same safety policy to support consistent comparison.
+
+### 7.2 Model Selection
+
+**Model:** `Qwen/Qwen2.5-1.5B-Instruct`
+
+**Architecture:** Decoder-only Transformer (causal language model)
+
+**Framework:** Hugging Face Transformers and PyTorch
+
+**Adaptation strategy:** Prompt engineering without model fine-tuning.
+
+The pretrained Qwen model generates banking support responses using autoregressive token generation.
+
+### 7.3 Dataset Integration
+
+Part 2 reuses the evaluation dataset generated during Part 1.
+
+**Dataset location:** `data/evaluation_sample.csv`
+
+**Evaluation records:** 231
+
+**Number of banking intents:** 77
+
+**CSV columns:**
+
+- `sample_id`: Unique evaluation sample identifier
+- `source_index`: Original dataset row index
+- `text`: Banking customer query
+- `label`: Numeric ground-truth intent label
+- `intent`: Ground-truth intent name
+
+Ground-truth labels are retained for evaluation and must not be supplied to the model during intent-prediction experiments.
+
+### 7.4 Part 2 Source Files
+
+| File | Description |
+|---|---|
+| `src/model/llm_baseline.py` | Qwen model loading and response generation |
+| `src/model/decoding.py` | Decoding strategies and parameters |
+| `src/prompts/templates.py` | Reusable prompt templates |
+| `run_part2.py` | Prompt and decoding experiment runner |
+| `notebooks/BANKING77_Qwen_Reference_Colab.ipynb` | Reference notebook for Colab |
+
+### 7.5 Environment Setup
+
+Use Python 3.11 with the project virtual environment.
+
+Install dependencies:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+Verify important libraries:
+
+```powershell
+.\.venv\Scripts\python.exe -c "import torch, transformers, pandas, accelerate; print('Dependencies OK')"
+```
+
+### 7.6 Run Part 2 Experiments
+
+From the project root:
+
+```powershell
+.\.venv\Scripts\python.exe run_part2.py --evaluation_csv data/evaluation_sample.csv --limit 3
+```
+
+After a successful smoke test:
+
+```powershell
+.\.venv\Scripts\python.exe run_part2.py --evaluation_csv data/evaluation_sample.csv --limit 10
+```
+
+A compatible GPU is recommended. Google Colab with a T4 GPU can be used if local execution is too slow.
+
+### 7.7 Experiments
+
+**E1 — Baseline:** Generate at least three banking support responses using a simple prompt and the pretrained Qwen model.
+
+**E2 — Prompt comparison:** Compare zero-shot, few-shot, role-based and constraint-based prompting using identical evaluation queries.
+
+**E3 — Decoding comparison:** Compare greedy decoding, temperature sampling and top-p sampling while keeping the model and prompt fixed.
+
+### 7.8 Expected Experiment Outputs
+
+The experiment runner generates:
+
+```text
+experiments/
+    prompt_comparison.csv
+    decoding_comparison.csv
+    experiment_runs.jsonl
+```
+
+The baseline experiment and evaluation analysis must also be documented for final submission.
+
+### 7.9 Evaluation
+
+Responses will be reviewed for:
+
+1. Relevance to the customer query.
+2. Safety and avoidance of sensitive credential requests.
+3. Clarity and usefulness.
+4. Consistency across repeated generations.
+5. Compliance with prompt constraints.
+
+Experimental findings will be documented in the Part 2 report.
+
+### 7.10 Responsible Use
+
+This is an educational demonstration, not a production banking service.
+
+The assistant must not request real banking passwords, PINs or OTPs. It must not claim that a transaction or card-blocking operation has occurred without verified confirmation.
+
+### 7.11 Execution Status
+
+- Part 1 dataset loading: Completed.
+- Part 1 evaluation sample: Generated.
+- Part 2 source integration: In progress.
+- Qwen inference: Pending execution.
+- Prompt and decoding results: Pending execution.
+- Final analysis: Pending experiment results.

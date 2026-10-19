@@ -5,3 +5,8 @@ scikit-learn
 matplotlib
 jupyter
 ipykernel
+torch>=2.2
+transformers>=4.44,<5
+accelerate>=0.33
+pandas>=2.0
+pyyaml>=6
