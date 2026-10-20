@@ -1,0 +1,49 @@
+{
+  "experiment": "E1_baseline",
+  "dataset": "PolyAI/banking77 (test.csv)",
+  "sample_seed": 77,
+  "model": "qwen3:1.7b",
+  "decoding": {
+    "do_sample": false,
+    "temperature": 0.0,
+    "max_tokens": 256
+  },
+  "timestamp_utc": "2026-10-18T09:18:52.442167+00:00",
+  "results": [
+    {
+      "id": 1,
+      "query": "Has my top up been reverted?",
+      "gold_intent": "top_up_reverted",
+      "prompt": "Classify the banking customer query into an intent and reply.\n\nQuery: Has my top up been reverted?",
+      "output": "**Intent:** Clarification / Inquiry  \n**Reply:** Please check your account statement or contact customer support to confirm if your top-up has been reverted."
+    },
+    {
+      "id": 2,
+      "query": "I have friends that would like to top-up my account is that possible?",
+      "gold_intent": "topping_up_by_card",
+      "prompt": "Classify the banking customer query into an intent and reply.\n\nQuery: I have friends that would like to top-up my account is that possible?",
+      "output": "**Intent:**  \n**\"Can I top up my account with friends?\"**\n\n**Reply:**  \nYes, you can top up your account using your friend's payment method. You would need to provide your bank details or use a payment gateway to link your account to your friend's card. Let me know if you need help with the process!"
+    },
+    {
+      "id": 3,
+      "query": "I would appreciate that someone let me know when there is an extra charge for payments. I was checking the app earlier and saying a charge on one of my payments that was additional that no one made me aware of before.",
+      "gold_intent": "card_payment_fee_charged",
+      "prompt": "Classify the banking customer query into an intent and reply.\n\nQuery: I would appreciate that someone let me know when there is an extra charge for payments. I was checking the app earlier and saying a charge on one of my payments that was additional that no one made me aware of before.",
+      "output": "**Intent:**  \n**Request for Information**  \n*(Specifically, the customer is asking for notification about additional charges on their payments.)*\n\n**Reply:**  \nYou can set up alerts in your banking app to notify you when there are extra charges on your payments. Look for the \"Alerts\" or \"Notifications\" section in your account settings. If you're using a specific bank's app, check their help center or support section for instructions on enabling this feature. Let me know if you need help with the exact steps for your bank!"
+    },
+    {
+      "id": 4,
+      "query": "Can I use my card everywhere?",
+      "gold_intent": "card_acceptance",
+      "prompt": "Classify the banking customer query into an intent and reply.\n\nQuery: Can I use my card everywhere?",
+      "output": "**Intent:** General Inquiry  \n**Reply:** Yes, you can use your card everywhere, but you should check with the merchant or bank for specific policies, such as minimum spending requirements, transaction fees, and acceptance limits."
+    },
+    {
+      "id": 5,
+      "query": "I tried to take out cash but the amount isn't right, so what do I do?",
+      "gold_intent": "wrong_amount_of_cash_received",
+      "prompt": "Classify the banking customer query into an intent and reply.\n\nQuery: I tried to take out cash but the amount isn't right, so what do I do?",
+      "output": "**Intent:** Banking Customer Inquiry  \n**Reply:** You should check with your bank or financial institution to confirm the correct amount for cash withdrawal. If you're at a teller, ask them to verify the amount. If you're using an online or mobile banking platform, contact customer support for assistance."
+    }
+  ]
+}
