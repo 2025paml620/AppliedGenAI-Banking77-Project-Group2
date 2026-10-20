@@ -1,0 +1,1182 @@
+{
+  "experiment": "E2_prompt_variants",
+  "dataset": "PolyAI/banking77 (train.csv, test.csv)",
+  "seed": 77,
+  "intents": [
+    "card_linking",
+    "card_payment_wrong_exchange_rate",
+    "contactless_not_working",
+    "country_support",
+    "disposable_card_limits",
+    "exchange_charge",
+    "fiat_currency_support",
+    "getting_virtual_card",
+    "top_up_limits",
+    "visa_or_mastercard"
+  ],
+  "model": "qwen3:1.7b",
+  "decoding": {
+    "do_sample": false,
+    "temperature": 0.0,
+    "max_tokens": 64
+  },
+  "timestamp_utc": "2026-10-20T09:10:35.906308+00:00",
+  "summary": [
+    {
+      "variant": "zero_shot",
+      "accuracy": 0.7,
+      "valid_format_rate": 0.967,
+      "n": 30
+    },
+    {
+      "variant": "few_shot",
+      "accuracy": 0.233,
+      "valid_format_rate": 1.0,
+      "n": 30
+    },
+    {
+      "variant": "role_driven",
+      "accuracy": 0.733,
+      "valid_format_rate": 1.0,
+      "n": 30
+    },
+    {
+      "variant": "strict_constraint",
+      "accuracy": 0.7,
+      "valid_format_rate": 0.867,
+      "n": 30
+    }
+  ],
+  "exemplars": [
+    {
+      "text": "How do I reactivate my card?",
+      "category": "card_linking"
+    },
+    {
+      "text": "A foreign purchase I made has the incorrect rate applied to it.",
+      "category": "card_payment_wrong_exchange_rate"
+    },
+    {
+      "text": "What is the reason when I tried to pay contactless at the bus, it didnt work?",
+      "category": "contactless_not_working"
+    },
+    {
+      "text": "I live in the EU - can I get a card?",
+      "category": "country_support"
+    },
+    {
+      "text": "Can I get a disposable card?  How many can I have?  How often can I use them?",
+      "category": "disposable_card_limits"
+    },
+    {
+      "text": "Are there any fees when exchanging to foreign currencies?",
+      "category": "exchange_charge"
+    },
+    {
+      "text": "I heard that you support more than one type of fiat currency, would you tell me which ones please?",
+      "category": "fiat_currency_support"
+    },
+    {
+      "text": "I'd like like to know where I can order a virtual card?",
+      "category": "getting_virtual_card"
+    },
+    {
+      "text": "limits on top ups",
+      "category": "top_up_limits"
+    },
+    {
+      "text": "I'm happy with Mastercard and want to stick with just that credit card.",
+      "category": "visa_or_mastercard"
+    }
+  ],
+  "results": {
+    "zero_shot": [
+      {
+        "id": 1,
+        "query": "Can I have more than one disposable card?",
+        "gold_intent": "disposable_card_limits",
+        "output": "disposable_card_limits",
+        "predicted_intent": "disposable_card_limits",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 2,
+        "query": "What are your currency exchange fees?",
+        "gold_intent": "exchange_charge",
+        "output": "exchange_charge",
+        "predicted_intent": "exchange_charge",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 3,
+        "query": "How much do I have to pay for the exchange fee?",
+        "gold_intent": "exchange_charge",
+        "output": "exchange_charge",
+        "predicted_intent": "exchange_charge",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 4,
+        "query": "Am I allowed to use any card to make a payment?",
+        "gold_intent": "visa_or_mastercard",
+        "output": "card_linking",
+        "predicted_intent": "card_linking",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 5,
+        "query": "I would like to reactivate my card.",
+        "gold_intent": "card_linking",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 6,
+        "query": "The NFC payment wouldn't work on the bus today. Help?",
+        "gold_intent": "contactless_not_working",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 7,
+        "query": "Can I link my new card?",
+        "gold_intent": "card_linking",
+        "output": "card_linking",
+        "predicted_intent": "card_linking",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 8,
+        "query": "I would prefer a visa card",
+        "gold_intent": "visa_or_mastercard",
+        "output": "getting_virtual_card",
+        "predicted_intent": "getting_virtual_card",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 9,
+        "query": "In terms of holding and exchange, what fiat currencies do you use.",
+        "gold_intent": "fiat_currency_support",
+        "output": "fiat_currency_support",
+        "predicted_intent": "fiat_currency_support",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 10,
+        "query": "When considering currency holdings and exchanges, what fiat currencies are supported?",
+        "gold_intent": "fiat_currency_support",
+        "output": "fiat_currency_support",
+        "predicted_intent": "fiat_currency_support",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 11,
+        "query": "Am I able to choose my card?",
+        "gold_intent": "visa_or_mastercard",
+        "output": "card_linking",
+        "predicted_intent": "card_linking",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 12,
+        "query": "As for limits are top ups included?",
+        "gold_intent": "top_up_limits",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 13,
+        "query": "Can someone assist me with the details explaining which fiat currencies that you support?",
+        "gold_intent": "fiat_currency_support",
+        "output": "fiat_currency_support",
+        "predicted_intent": "fiat_currency_support",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 14,
+        "query": "Do you have a limit to top ups?",
+        "gold_intent": "top_up_limits",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 15,
+        "query": "How much money can i top up?",
+        "gold_intent": "top_up_limits",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 16,
+        "query": "I don't think my card payment exchange rate is correct.",
+        "gold_intent": "card_payment_wrong_exchange_rate",
+        "output": "card_payment_wrong_exchange_rate",
+        "predicted_intent": "card_payment_wrong_exchange_rate",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 17,
+        "query": "The exchange rate on my purchase is wrong.",
+        "gold_intent": "card_payment_wrong_exchange_rate",
+        "output": "card_payment_wrong_exchange_rate",
+        "predicted_intent": "card_payment_wrong_exchange_rate",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 18,
+        "query": "I need to use my disposable card multiple times a day, is there a cutoff limit?",
+        "gold_intent": "disposable_card_limits",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 19,
+        "query": "What are the countries you operate in.",
+        "gold_intent": "country_support",
+        "output": "country_support",
+        "predicted_intent": "country_support",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 20,
+        "query": "Why wouldn't the contactless payment work when I tried to pay at the bus today?",
+        "gold_intent": "contactless_not_working",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 21,
+        "query": "Please give me both a visa and a master card.",
+        "gold_intent": "visa_or_mastercard",
+        "output": "visa_or_mastercard",
+        "predicted_intent": "visa_or_mastercard",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 22,
+        "query": "I like to Mastercard rather than Visa.",
+        "gold_intent": "visa_or_mastercard",
+        "output": "visa_or_mastercard",
+        "predicted_intent": "visa_or_mastercard",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 23,
+        "query": "Am I able to exchange currencies?",
+        "gold_intent": "fiat_currency_support",
+        "output": "currency_exchange",
+        "predicted_intent": null,
+        "valid_format": false,
+        "correct": false
+      },
+      {
+        "id": 24,
+        "query": "Besides USD what other currencies can I have?",
+        "gold_intent": "fiat_currency_support",
+        "output": "fiat_currency_support",
+        "predicted_intent": "fiat_currency_support",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 25,
+        "query": "Will you handle EUR?",
+        "gold_intent": "fiat_currency_support",
+        "output": "country_support",
+        "predicted_intent": "country_support",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 26,
+        "query": "Could you help me reactivate my card? It was previously lost, but I found it this morning in my jacket.",
+        "gold_intent": "card_linking",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 27,
+        "query": "I made a currency exchange and think I was charged more than I should of been.",
+        "gold_intent": "card_payment_wrong_exchange_rate",
+        "output": "card_payment_wrong_exchange_rate",
+        "predicted_intent": "card_payment_wrong_exchange_rate",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 28,
+        "query": "Do you accept exchanges to EUR?",
+        "gold_intent": "fiat_currency_support",
+        "output": "exchange_charge",
+        "predicted_intent": "exchange_charge",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 29,
+        "query": "I would like to exchange currencies, but is there an extra charge to do so?",
+        "gold_intent": "exchange_charge",
+        "output": "exchange_charge",
+        "predicted_intent": "exchange_charge",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 30,
+        "query": "What's the most disposable cards I can have?",
+        "gold_intent": "disposable_card_limits",
+        "output": "disposable_card_limits",
+        "predicted_intent": "disposable_card_limits",
+        "valid_format": true,
+        "correct": true
+      }
+    ],
+    "few_shot": [
+      {
+        "id": 1,
+        "query": "Can I have more than one disposable card?",
+        "gold_intent": "disposable_card_limits",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 2,
+        "query": "What are your currency exchange fees?",
+        "gold_intent": "exchange_charge",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 3,
+        "query": "How much do I have to pay for the exchange fee?",
+        "gold_intent": "exchange_charge",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 4,
+        "query": "Am I allowed to use any card to make a payment?",
+        "gold_intent": "visa_or_mastercard",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 5,
+        "query": "I would like to reactivate my card.",
+        "gold_intent": "card_linking",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 6,
+        "query": "The NFC payment wouldn't work on the bus today. Help?",
+        "gold_intent": "contactless_not_working",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 7,
+        "query": "Can I link my new card?",
+        "gold_intent": "card_linking",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 8,
+        "query": "I would prefer a visa card",
+        "gold_intent": "visa_or_mastercard",
+        "output": "getting_virtual_card",
+        "predicted_intent": "getting_virtual_card",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 9,
+        "query": "In terms of holding and exchange, what fiat currencies do you use.",
+        "gold_intent": "fiat_currency_support",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 10,
+        "query": "When considering currency holdings and exchanges, what fiat currencies are supported?",
+        "gold_intent": "fiat_currency_support",
+        "output": "getting_virtual_card",
+        "predicted_intent": "getting_virtual_card",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 11,
+        "query": "Am I able to choose my card?",
+        "gold_intent": "visa_or_mastercard",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 12,
+        "query": "As for limits are top ups included?",
+        "gold_intent": "top_up_limits",
+        "output": "getting_virtual_card",
+        "predicted_intent": "getting_virtual_card",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 13,
+        "query": "Can someone assist me with the details explaining which fiat currencies that you support?",
+        "gold_intent": "fiat_currency_support",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 14,
+        "query": "Do you have a limit to top ups?",
+        "gold_intent": "top_up_limits",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 15,
+        "query": "How much money can i top up?",
+        "gold_intent": "top_up_limits",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 16,
+        "query": "I don't think my card payment exchange rate is correct.",
+        "gold_intent": "card_payment_wrong_exchange_rate",
+        "output": "card_payment_wrong_exchange_rate",
+        "predicted_intent": "card_payment_wrong_exchange_rate",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 17,
+        "query": "The exchange rate on my purchase is wrong.",
+        "gold_intent": "card_payment_wrong_exchange_rate",
+        "output": "card_payment_wrong_exchange_rate",
+        "predicted_intent": "card_payment_wrong_exchange_rate",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 18,
+        "query": "I need to use my disposable card multiple times a day, is there a cutoff limit?",
+        "gold_intent": "disposable_card_limits",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 19,
+        "query": "What are the countries you operate in.",
+        "gold_intent": "country_support",
+        "output": "getting_virtual_card",
+        "predicted_intent": "getting_virtual_card",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 20,
+        "query": "Why wouldn't the contactless payment work when I tried to pay at the bus today?",
+        "gold_intent": "contactless_not_working",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 21,
+        "query": "Please give me both a visa and a master card.",
+        "gold_intent": "visa_or_mastercard",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 22,
+        "query": "I like to Mastercard rather than Visa.",
+        "gold_intent": "visa_or_mastercard",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 23,
+        "query": "Am I able to exchange currencies?",
+        "gold_intent": "fiat_currency_support",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 24,
+        "query": "Besides USD what other currencies can I have?",
+        "gold_intent": "fiat_currency_support",
+        "output": "getting_virtual_card",
+        "predicted_intent": "getting_virtual_card",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 25,
+        "query": "Will you handle EUR?",
+        "gold_intent": "fiat_currency_support",
+        "output": "getting_virtual_card",
+        "predicted_intent": "getting_virtual_card",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 26,
+        "query": "Could you help me reactivate my card? It was previously lost, but I found it this morning in my jacket.",
+        "gold_intent": "card_linking",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 27,
+        "query": "I made a currency exchange and think I was charged more than I should of been.",
+        "gold_intent": "card_payment_wrong_exchange_rate",
+        "output": "card_payment_wrong_exchange_rate",
+        "predicted_intent": "card_payment_wrong_exchange_rate",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 28,
+        "query": "Do you accept exchanges to EUR?",
+        "gold_intent": "fiat_currency_support",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 29,
+        "query": "I would like to exchange currencies, but is there an extra charge to do so?",
+        "gold_intent": "exchange_charge",
+        "output": "getting_virtual_card",
+        "predicted_intent": "getting_virtual_card",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 30,
+        "query": "What's the most disposable cards I can have?",
+        "gold_intent": "disposable_card_limits",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": false
+      }
+    ],
+    "role_driven": [
+      {
+        "id": 1,
+        "query": "Can I have more than one disposable card?",
+        "gold_intent": "disposable_card_limits",
+        "output": "disposable_card_limits",
+        "predicted_intent": "disposable_card_limits",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 2,
+        "query": "What are your currency exchange fees?",
+        "gold_intent": "exchange_charge",
+        "output": "exchange_charge",
+        "predicted_intent": "exchange_charge",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 3,
+        "query": "How much do I have to pay for the exchange fee?",
+        "gold_intent": "exchange_charge",
+        "output": "exchange_charge",
+        "predicted_intent": "exchange_charge",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 4,
+        "query": "Am I allowed to use any card to make a payment?",
+        "gold_intent": "visa_or_mastercard",
+        "output": "card_linking",
+        "predicted_intent": "card_linking",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 5,
+        "query": "I would like to reactivate my card.",
+        "gold_intent": "card_linking",
+        "output": "card_linking",
+        "predicted_intent": "card_linking",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 6,
+        "query": "The NFC payment wouldn't work on the bus today. Help?",
+        "gold_intent": "contactless_not_working",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 7,
+        "query": "Can I link my new card?",
+        "gold_intent": "card_linking",
+        "output": "card_linking",
+        "predicted_intent": "card_linking",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 8,
+        "query": "I would prefer a visa card",
+        "gold_intent": "visa_or_mastercard",
+        "output": "visa_or_mastercard",
+        "predicted_intent": "visa_or_mastercard",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 9,
+        "query": "In terms of holding and exchange, what fiat currencies do you use.",
+        "gold_intent": "fiat_currency_support",
+        "output": "fiat_currency_support",
+        "predicted_intent": "fiat_currency_support",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 10,
+        "query": "When considering currency holdings and exchanges, what fiat currencies are supported?",
+        "gold_intent": "fiat_currency_support",
+        "output": "fiat_currency_support",
+        "predicted_intent": "fiat_currency_support",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 11,
+        "query": "Am I able to choose my card?",
+        "gold_intent": "visa_or_mastercard",
+        "output": "card_linking",
+        "predicted_intent": "card_linking",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 12,
+        "query": "As for limits are top ups included?",
+        "gold_intent": "top_up_limits",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 13,
+        "query": "Can someone assist me with the details explaining which fiat currencies that you support?",
+        "gold_intent": "fiat_currency_support",
+        "output": "fiat_currency_support",
+        "predicted_intent": "fiat_currency_support",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 14,
+        "query": "Do you have a limit to top ups?",
+        "gold_intent": "top_up_limits",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 15,
+        "query": "How much money can i top up?",
+        "gold_intent": "top_up_limits",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 16,
+        "query": "I don't think my card payment exchange rate is correct.",
+        "gold_intent": "card_payment_wrong_exchange_rate",
+        "output": "card_payment_wrong_exchange_rate",
+        "predicted_intent": "card_payment_wrong_exchange_rate",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 17,
+        "query": "The exchange rate on my purchase is wrong.",
+        "gold_intent": "card_payment_wrong_exchange_rate",
+        "output": "card_payment_wrong_exchange_rate",
+        "predicted_intent": "card_payment_wrong_exchange_rate",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 18,
+        "query": "I need to use my disposable card multiple times a day, is there a cutoff limit?",
+        "gold_intent": "disposable_card_limits",
+        "output": "disposable_card_limits",
+        "predicted_intent": "disposable_card_limits",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 19,
+        "query": "What are the countries you operate in.",
+        "gold_intent": "country_support",
+        "output": "country_support",
+        "predicted_intent": "country_support",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 20,
+        "query": "Why wouldn't the contactless payment work when I tried to pay at the bus today?",
+        "gold_intent": "contactless_not_working",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 21,
+        "query": "Please give me both a visa and a master card.",
+        "gold_intent": "visa_or_mastercard",
+        "output": "getting_virtual_card",
+        "predicted_intent": "getting_virtual_card",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 22,
+        "query": "I like to Mastercard rather than Visa.",
+        "gold_intent": "visa_or_mastercard",
+        "output": "getting_virtual_card",
+        "predicted_intent": "getting_virtual_card",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 23,
+        "query": "Am I able to exchange currencies?",
+        "gold_intent": "fiat_currency_support",
+        "output": "exchange_charge",
+        "predicted_intent": "exchange_charge",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 24,
+        "query": "Besides USD what other currencies can I have?",
+        "gold_intent": "fiat_currency_support",
+        "output": "fiat_currency_support",
+        "predicted_intent": "fiat_currency_support",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 25,
+        "query": "Will you handle EUR?",
+        "gold_intent": "fiat_currency_support",
+        "output": "fiat_currency_support",
+        "predicted_intent": "fiat_currency_support",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 26,
+        "query": "Could you help me reactivate my card? It was previously lost, but I found it this morning in my jacket.",
+        "gold_intent": "card_linking",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 27,
+        "query": "I made a currency exchange and think I was charged more than I should of been.",
+        "gold_intent": "card_payment_wrong_exchange_rate",
+        "output": "exchange_charge",
+        "predicted_intent": "exchange_charge",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 28,
+        "query": "Do you accept exchanges to EUR?",
+        "gold_intent": "fiat_currency_support",
+        "output": "exchange_charge",
+        "predicted_intent": "exchange_charge",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 29,
+        "query": "I would like to exchange currencies, but is there an extra charge to do so?",
+        "gold_intent": "exchange_charge",
+        "output": "exchange_charge",
+        "predicted_intent": "exchange_charge",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 30,
+        "query": "What's the most disposable cards I can have?",
+        "gold_intent": "disposable_card_limits",
+        "output": "disposable_card_limits",
+        "predicted_intent": "disposable_card_limits",
+        "valid_format": true,
+        "correct": true
+      }
+    ],
+    "strict_constraint": [
+      {
+        "id": 1,
+        "query": "Can I have more than one disposable card?",
+        "gold_intent": "disposable_card_limits",
+        "output": "disposable_card_limits",
+        "predicted_intent": "disposable_card_limits",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 2,
+        "query": "What are your currency exchange fees?",
+        "gold_intent": "exchange_charge",
+        "output": "currency_exchange_fee",
+        "predicted_intent": null,
+        "valid_format": false,
+        "correct": false
+      },
+      {
+        "id": 3,
+        "query": "How much do I have to pay for the exchange fee?",
+        "gold_intent": "exchange_charge",
+        "output": "exchange_charge",
+        "predicted_intent": "exchange_charge",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 4,
+        "query": "Am I allowed to use any card to make a payment?",
+        "gold_intent": "visa_or_mastercard",
+        "output": "card_linking",
+        "predicted_intent": "card_linking",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 5,
+        "query": "I would like to reactivate my card.",
+        "gold_intent": "card_linking",
+        "output": "card_linking",
+        "predicted_intent": "card_linking",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 6,
+        "query": "The NFC payment wouldn't work on the bus today. Help?",
+        "gold_intent": "contactless_not_working",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 7,
+        "query": "Can I link my new card?",
+        "gold_intent": "card_linking",
+        "output": "card_linking",
+        "predicted_intent": "card_linking",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 8,
+        "query": "I would prefer a visa card",
+        "gold_intent": "visa_or_mastercard",
+        "output": "visa_or_mastercard",
+        "predicted_intent": "visa_or_mastercard",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 9,
+        "query": "In terms of holding and exchange, what fiat currencies do you use.",
+        "gold_intent": "fiat_currency_support",
+        "output": "fiat_currency_support",
+        "predicted_intent": "fiat_currency_support",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 10,
+        "query": "When considering currency holdings and exchanges, what fiat currencies are supported?",
+        "gold_intent": "fiat_currency_support",
+        "output": "fiat_currency_support",
+        "predicted_intent": "fiat_currency_support",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 11,
+        "query": "Am I able to choose my card?",
+        "gold_intent": "visa_or_mastercard",
+        "output": "card_linking",
+        "predicted_intent": "card_linking",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 12,
+        "query": "As for limits are top ups included?",
+        "gold_intent": "top_up_limits",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 13,
+        "query": "Can someone assist me with the details explaining which fiat currencies that you support?",
+        "gold_intent": "fiat_currency_support",
+        "output": "fiat_currency_support",
+        "predicted_intent": "fiat_currency_support",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 14,
+        "query": "Do you have a limit to top ups?",
+        "gold_intent": "top_up_limits",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 15,
+        "query": "How much money can i top up?",
+        "gold_intent": "top_up_limits",
+        "output": "top_up_limits",
+        "predicted_intent": "top_up_limits",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 16,
+        "query": "I don't think my card payment exchange rate is correct.",
+        "gold_intent": "card_payment_wrong_exchange_rate",
+        "output": "card_payment_wrong_exchange_rate",
+        "predicted_intent": "card_payment_wrong_exchange_rate",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 17,
+        "query": "The exchange rate on my purchase is wrong.",
+        "gold_intent": "card_payment_wrong_exchange_rate",
+        "output": "card_payment_wrong_exchange_rate",
+        "predicted_intent": "card_payment_wrong_exchange_rate",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 18,
+        "query": "I need to use my disposable card multiple times a day, is there a cutoff limit?",
+        "gold_intent": "disposable_card_limits",
+        "output": "disposable_card_limits",
+        "predicted_intent": "disposable_card_limits",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 19,
+        "query": "What are the countries you operate in.",
+        "gold_intent": "country_support",
+        "output": "country_support",
+        "predicted_intent": "country_support",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 20,
+        "query": "Why wouldn't the contactless payment work when I tried to pay at the bus today?",
+        "gold_intent": "contactless_not_working",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 21,
+        "query": "Please give me both a visa and a master card.",
+        "gold_intent": "visa_or_mastercard",
+        "output": "visa_or_mastercard",
+        "predicted_intent": "visa_or_mastercard",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 22,
+        "query": "I like to Mastercard rather than Visa.",
+        "gold_intent": "visa_or_mastercard",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 23,
+        "query": "Am I able to exchange currencies?",
+        "gold_intent": "fiat_currency_support",
+        "output": "currency_exchange",
+        "predicted_intent": null,
+        "valid_format": false,
+        "correct": false
+      },
+      {
+        "id": 24,
+        "query": "Besides USD what other currencies can I have?",
+        "gold_intent": "fiat_currency_support",
+        "output": "currency_support",
+        "predicted_intent": null,
+        "valid_format": false,
+        "correct": false
+      },
+      {
+        "id": 25,
+        "query": "Will you handle EUR?",
+        "gold_intent": "fiat_currency_support",
+        "output": "currency_support",
+        "predicted_intent": null,
+        "valid_format": false,
+        "correct": false
+      },
+      {
+        "id": 26,
+        "query": "Could you help me reactivate my card? It was previously lost, but I found it this morning in my jacket.",
+        "gold_intent": "card_linking",
+        "output": "contactless_not_working",
+        "predicted_intent": "contactless_not_working",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 27,
+        "query": "I made a currency exchange and think I was charged more than I should of been.",
+        "gold_intent": "card_payment_wrong_exchange_rate",
+        "output": "card_payment_wrong_exchange_rate",
+        "predicted_intent": "card_payment_wrong_exchange_rate",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 28,
+        "query": "Do you accept exchanges to EUR?",
+        "gold_intent": "fiat_currency_support",
+        "output": "card_linking",
+        "predicted_intent": "card_linking",
+        "valid_format": true,
+        "correct": false
+      },
+      {
+        "id": 29,
+        "query": "I would like to exchange currencies, but is there an extra charge to do so?",
+        "gold_intent": "exchange_charge",
+        "output": "exchange_charge",
+        "predicted_intent": "exchange_charge",
+        "valid_format": true,
+        "correct": true
+      },
+      {
+        "id": 30,
+        "query": "What's the most disposable cards I can have?",
+        "gold_intent": "disposable_card_limits",
+        "output": "disposable_card_limits",
+        "predicted_intent": "disposable_card_limits",
+        "valid_format": true,
+        "correct": true
+      }
+    ]
+  }
+}

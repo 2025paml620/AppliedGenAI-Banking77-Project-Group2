@@ -1,0 +1,14 @@
+10 intents: card_linking, card_payment_wrong_exchange_rate, contactless_not_working, country_support, disposable_card_limits, exchange_charge, fiat_currency_support, getting_virtual_card, top_up_limits, visa_or_mastercard
+30 scored queries, 10 few-shot exemplars
+zero_shot: done (30 queries)
+few_shot: done (30 queries)
+role_driven: done (30 queries)
+strict_constraint: done (30 queries)
+| variant | accuracy | valid_format_rate | n |
+|---|---|---|---|
+| zero_shot | 0.7 | 0.967 | 30 |
+| few_shot | 0.233 | 1.0 | 30 |
+| role_driven | 0.733 | 1.0 | 30 |
+| strict_constraint | 0.7 | 0.867 | 30 |
+Saved to results\e2_prompt_variants.json
+exit=0
