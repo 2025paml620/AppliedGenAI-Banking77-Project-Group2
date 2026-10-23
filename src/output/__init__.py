@@ -1,0 +1,1 @@
+"""Structured application output contracts."""

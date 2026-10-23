@@ -14,19 +14,25 @@ Our implementation follows a learning-by-doing approach: understand the necessar
 
 Use this section as the main entry point for navigating the project.
 
-| Resource | Description |
-|---|---|
-| [Project Overview](#1-project-overview) | Understand the problem and project goals |
-| [Project Decisions](#3-project-decisions) | Review the dataset, model, and development environment |
-| [Dataset and Evaluation](#4-dataset-and-evaluation-sample) | Understand Banking77 and the evaluation sample |
-| [Evaluation Protocol](reports/evaluation_protocol.md) | Sampling strategy, metrics, reproducibility, and evaluation rules |
-| [Data Exploration Notebook](notebooks/data_exploration.ipynb) | Inspect the dataset and independently verify data |
-| [Dataset Utilities](src/data/dataset.py) | Reusable dataset loading and preparation functions |
-| [Evaluation Preparation Script](scripts/prepare_evaluation_data.py) | Generate the reproducible evaluation sample |
-| [Requirements](requirements.txt) | Review Python dependencies |
-| [Current Progress](#11-current-progress) | Check completed and pending work |
-| [Problem Definition](reports/problem_definition.md) | Target user, input/output contract, and safety boundaries |
-| [Dataset Notes](data/DATASET_NOTES.md) | Dataset statistics, label mapping, preprocessing, evaluation sampling, and leakage prevention |
+| Resource                                                            | Description                                                                                   |
+|---------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| [Project Overview](#1-project-overview)                             | Understand the problem and project goals                                                      |
+| [Project Decisions](#3-project-decisions)                           | Review the dataset, model, and development environment                                        |
+| [Dataset and Evaluation](#4-dataset-and-evaluation-sample)          | Understand Banking77 and the evaluation sample                                                |
+| [Evaluation Protocol](reports/evaluation_protocol.md)               | Sampling strategy, metrics, reproducibility, and evaluation rules                             |
+| [Data Exploration Notebook](notebooks/data_exploration.ipynb)       | Inspect the dataset and independently verify data                                             |
+| [Dataset Utilities](src/data/dataset.py)                            | Reusable dataset loading and preparation functions                                            |
+| [Structured output contract](src/output/schema.py)                  | JSON schema, parsing, validation and fallback                                                 |
+| [Simulated card tool](src/tools/application_tools.py)               | Validated local-only card-lock demonstration                                                  |
+| [Integrated pipeline](src/pipeline.py)                              | Query, guarded generation, validation and optional tool flow                                  |
+| [Adaptation comparison](reports/adaptation_strategy.md)             | Prompting vs RAG vs fine-tuning/PEFT                                                          |
+| [Failure analysis template](reports/failure_analysis.csv)           | Record at least three observed failures                                                       |
+| [Demo plan](reports/demo_plan.md)                                   | 8–10 minute integrated walkthrough                                                            |
+| [Evaluation Preparation Script](scripts/prepare_evaluation_data.py) | Generate the reproducible evaluation sample                                                   |
+| [Requirements](requirements.txt)                                    | Review Python dependencies                                                                    |
+| [Current Progress](#11-current-progress)                            | Check completed and pending work                                                              |
+| [Problem Definition](reports/problem_definition.md)                 | Target user, input/output contract, and safety boundaries                                     |
+| [Dataset Notes](data/DATASET_NOTES.md)                              | Dataset statistics, label mapping, preprocessing, evaluation sampling, and leakage prevention |
 
 ### Project workstreams
 
@@ -309,6 +315,8 @@ The team will agree on shared interfaces and evaluation conventions before integ
 - [ ] Responsible-use risks and controls documented.
 - [ ] Final report, presentation, demo, and contribution statements completed.
 
+Part 3 and Part 4 implementation components are now available on the `2025paml617-abijith` feature branch. The checklist above tracks project-level evidence and remains incomplete until real model runs, human response review, and final report/demo work are supplied.
+
 ## 12. References and Related Documentation
 
 - [Banking77 dataset on Hugging Face](https://huggingface.co/datasets/PolyAI/banking77)
@@ -319,6 +327,11 @@ The team will agree on shared interfaces and evaluation conventions before integ
 - [Data Exploration Notebook](notebooks/data_exploration.ipynb)
 - [Dataset Preparation Module](src/data/dataset.py)
 - [Evaluation Preparation Script](scripts/prepare_evaluation_data.py)
+- [Structured Output Contract](src/output/schema.py)
+- [Integrated Pipeline](src/pipeline.py)
+- [Simulated Tool](src/tools/application_tools.py)
+- [Adaptation Strategy Comparison](reports/adaptation_strategy.md)
+- [Demo Plan](reports/demo_plan.md)
 
 External links are provided for reference. Model implementation details and experimental results will be documented as the corresponding work is completed.
 
