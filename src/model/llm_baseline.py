@@ -6,15 +6,21 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, GenerationConfig
 
 MODEL_ID = "Qwen/Qwen2.5-1.5B-Instruct"
 
+MODEL_REVISION = "989aa7980e4cf806f80c7fef2b1adb7bc71aa306"
+
 
 def load_model(model_id: str = MODEL_ID):
     print("Loading Qwen model...", flush=True)
 
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_id,
+        revision=MODEL_REVISION
+    )
 
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
-        torch_dtype="auto",
+        revision=MODEL_REVISION,
+        dtype="auto",
         device_map="auto"
     )
 

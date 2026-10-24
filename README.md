@@ -6,7 +6,7 @@ This project is part of the BITS Pilani Applied Generative AI course.
 
 We are building an educational banking customer-support assistant using a pretrained causal language model. The application will identify a customer's intent, generate a relevant and safe response, return structured output, and demonstrate a simulated tool/function call.
 
-The project will investigate how prompt design, context, decoding controls, and lightweight adaptation choices influence application behaviour.
+The project investigates how prompt design, context, and decoding controls influence application behaviour; it also documents potential retrieval and lightweight adaptation options.
 
 Our implementation follows a learning-by-doing approach: understand the necessary concepts, implement the workflow, run controlled experiments, analyse failures, and document the results.
 
@@ -28,6 +28,11 @@ Use this section as the main entry point for navigating the project.
 | [Problem Definition](reports/problem_definition.md) | Target user, input/output contract, and safety boundaries |
 | [Dataset Notes](data/DATASET_NOTES.md) | Dataset statistics, label mapping, preprocessing, evaluation sampling, and leakage prevention |
 | [Part 2 — Qwen Experiments](#8-part-2--qwen-llm-baseline-prompt-engineering-and-decoding) | Baseline, prompting, decoding, safety, and results |
+| [P2.2 — Model Configuration](#822-p22--model-configuration-and-reproducibility) | Recorded model revision, tokenizer, software, and device |
+| [P2.3 — Model Architecture](#823-p23--model-architecture-and-autoregressive-generation) | Tokenization, attention, language-model head, and generation |
+| [P2.5 — Zero-Shot Verification](#814-p25--zero-shot-intent-and-response-verification) | Three-intent experiment and observed formatting failures |
+| [P2.13 — Adaptation Options](#815-p213--prompting-vs-rag-vs-peft) | Technical comparison and project recommendation |
+| [Part 2 Completion Matrix](#816-part-2-requirement-completion-matrix) | Verified evidence and remaining actions |
 | [Part 2 — P2.12 Evaluation](#813-intent-classification-and-model-evaluation-p212) | Intent correctness, response quality, variability, and formatting |
 | [Gradio Demo](app.py) | Interactive educational banking assistant |
 
@@ -50,7 +55,7 @@ As implementation progresses, links to the relevant experiment logs, notebooks, 
 | Dataset repository | `PolyAI/banking77` |
 | Base model | `Qwen/Qwen2.5-1.5B-Instruct` |
 | Development environment | VS Code |
-| Python version | Python 3.12.9 |
+| Python version | Python 3.12 (verified Part 2 runtime: 3.12.10) |
 | Environment management | Python `venv` |
 | Initial dataset library | `datasets==3.6.0` |
 | Notebook environment | Jupyter notebook |
@@ -228,6 +233,108 @@ The objectives are to:
 
 The pretrained Qwen model generates banking support responses using autoregressive token generation.
 
+### 8.2.1 P2.2 — Model Configuration and Reproducibility
+
+The model and tokenizer configuration were captured using `scripts/record_model_config.py` and saved to `experiments/model_configuration.json`. The configuration below reflects the verified Windows CPU environment on 24 October 2026.
+
+| Property | Recorded value |
+|---|---|
+| Hugging Face model ID | `Qwen/Qwen2.5-1.5B-Instruct` |
+| Model revision (commit SHA) | `989aa7980e4cf806f80c7fef2b1adb7bc71aa306` |
+| Model class | `Qwen2ForCausalLM` |
+| Tokenizer class | `Qwen2TokenizerFast` |
+| Decoder layers | 28 |
+| Hidden dimension | 1,536 |
+| Query attention heads | 12 |
+| Key/value attention heads | 2 |
+| Model vocabulary size | 151,936 |
+| Tokenizer vocabulary size | 151,643 |
+| Operating system | Windows 11 |
+| Python | 3.12.10 |
+| Execution device | CPU (CUDA unavailable) |
+| PyTorch | `2.14.1+cpu` |
+| Transformers | `4.57.6` |
+| Hugging Face Hub | `0.36.2` |
+| Tokenizers | `0.22.2` |
+| Default generation length | `max_new_tokens=140` |
+
+**Recorded decoding configurations:** Greedy (`do_sample=False`); temperature 0.2 (`do_sample=True`, `temperature=0.2`, `top_p=1.0`); temperature 0.7 (`do_sample=True`, `temperature=0.7`, `top_p=1.0`); and top-p 0.9 (`do_sample=True`, `temperature=0.7`, `top_p=0.9`).
+
+The model loader in `src/model/llm_baseline.py` was updated to pin the recorded revision for future runs. The revised loader was tested successfully: the model ID and revision were printed, and the model and tokenizer loaded without errors. **Historical experiments are not automatically proven to have used this revision**, because earlier runs did not pin it. Actual generation parameters can also be overridden per call, so each experiment should retain its effective settings in its run log.
+
+**Reproduce the configuration record:**
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.record_model_config
+```
+
+### 8.2.2 P2.3 — Model Architecture and Autoregressive Generation
+
+The BANKING77 assistant uses `Qwen/Qwen2.5-1.5B-Instruct`, a **decoder-only Transformer** that predicts the next token from the preceding context. Its selected configuration has 28 decoder layers, a hidden size of 1,536, 12 query attention heads, and 2 key/value heads (grouped-query attention).
+
+#### Inference flow in the banking application
+
+```text
+Customer query (e.g., "Where is my replacement card?")
+                  |
+                  v
+        Prompt / chat template
+                  |
+                  v
+         Qwen2TokenizerFast
+                  |
+                  v
+              Token IDs
+                  |
+                  v
+           Token embeddings
+                  |
+                  v
+    28 Transformer decoder layers
+    - Causal self-attention
+    - Grouped-query attention
+    - Feed-forward transformations
+    - Normalization and residual paths
+                  |
+                  v
+         Language-model head
+                  |
+                  v
+         Next-token scores
+                  |
+                  v
+      Greedy or sampling decoder
+                  |
+                  v
+       Next generated token
+                  |
+                  +----> Repeat until stop condition
+                  |
+                  v
+       Decode generated tokens
+                  |
+                  v
+   Predicted intent or support reply
+                  |
+                  v
+       Output/safety validation
+```
+
+#### Component explanations
+
+1. **Tokenization.** `Qwen2TokenizerFast` breaks the prompt into subword tokens and converts them into integer IDs. The application uses the tokenizer's chat template to format a customer query as a model input.
+2. **Embeddings.** Learned token embeddings convert integer IDs into dense vectors of size 1,536 so the Transformer can process them.
+3. **Transformer attention.** Causal self-attention allows each position to use preceding context without looking ahead to future positions. Grouped-query attention shares key/value heads across multiple query heads, reducing key/value-cache requirements. Feed-forward layers, normalization, and residual connections further transform token representations.
+4. **Language-model head.** The final hidden state is projected into vocabulary scores (logits), which are converted into next-token probabilities for generation.
+5. **Autoregressive generation.** The model selects one next token, appends it to the available context, and repeats until an end token or the configured token limit is reached. It does not generate the whole response in a single step.
+6. **Decoding.** Greedy decoding selects the highest-scoring token at each step. Temperature sampling changes the sharpness of the probability distribution; top-p sampling restricts candidates to a probability-mass subset before sampling.
+
+#### Connection to BANKING77 experiments
+
+In **E1**, the model produces baseline customer-support replies. In **E2**, prompt instructions (zero-shot, few-shot, role-based, and constrained) change the context supplied to the same model. In **E3**, the prompt and model remain fixed while the decoding strategy changes. Separate intent-classification prompts ask the model to produce one of the 77 BANKING77 intent labels. The model's output is decoded to text and checked by application-level validation and safety guardrails; the model architecture itself does not guarantee safe or correct banking advice.
+
+**Evidence:** `src/model/llm_baseline.py`, `scripts/record_model_config.py`, and `experiments/model_configuration.json`.
+
 ### 8.3 Dataset Integration
 
 Part 2 reuses the evaluation dataset generated during Part 1.
@@ -253,9 +360,13 @@ Ground-truth labels are retained for evaluation and must not be supplied to the 
 | File | Description |
 |---|---|
 | `src/model/llm_baseline.py` | Qwen model loading and response generation |
+| `scripts/record_model_config.py` | Records model architecture, tokenizer, and runtime metadata |
+| `experiments/model_configuration.json` | Captured model and runtime configuration |
 | `src/model/decoding.py` | Decoding strategies and parameters |
 | `src/prompts/templates.py` | Reusable prompt templates |
 | `run_part2.py` | Prompt and decoding experiment runner |
+| `scripts/record_model_config.py` | Save model, tokenizer, runtime, and decoding configuration |
+| `scripts/run_p2_5.py` | Independent zero-shot intent-and-response verification |
 | `notebooks/BANKING77_Qwen_Reference_Colab.ipynb` | Reference notebook for Colab |
 
 ### 8.5 Environment Setup
@@ -339,6 +450,8 @@ The assistant must not request real banking passwords, PINs or OTPs. It must not
 - Automated P2.12 evaluation: Implemented.
 - Human response-quality review: Pending.
 - Full 231-query intent evaluation: Pending.
+- P2.5 three-intent verification: Completed (2/3 correct; strict JSON 0/3).
+- P2.13 adaptation-options discussion: Documented; no RAG or PEFT implementation claimed.
 
 ### 8.12 Safety Guardrails
 
@@ -674,6 +787,96 @@ This design supports:
 
 **Overall:** The project now supports both zero-shot banking intent classification and a reusable automated evaluation pipeline aligned with the four P2.12 assessment criteria.
 
+### 8.14 P2.5 — Zero-Shot Intent and Response Verification
+
+The P2.5 verification uses `scripts/run_p2_5.py` with `build_zero_shot_intent_response_prompt()` from `src/prompts/templates.py`. The prompt provides the **77 permitted intent names** as the task vocabulary but **no labelled demonstration examples and no per-query ground-truth intent**. It asks Qwen to produce an `intent` and a customer-facing `response` in JSON. Ground truth is used only after generation to calculate correctness.
+
+**Reproduce the diverse-intent smoke test** (run from the project root):
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.run_p2_5 --limit 3 --diverse_intents
+```
+
+**Evidence:** `experiments/p2_5_zero_shot.csv` (three evaluated queries). The console confirmed that Qwen loaded and the CSV was saved.
+
+| Ground-truth intent | Predicted intent | Correct | Valid intent-and-response structure |
+|---|---|---|---|
+| `activate_my_card` | `activate_my_card` | Yes | Yes |
+| `age_limit` | `age_limit` | Yes | Yes |
+| `apple_pay_or_google_pay` | `top_up_by_apple_pay` | No | No (intent does not match the allowed label vocabulary in this run) |
+
+| Metric | Result |
+|---|---:|
+| Queries tested | 3 |
+| Correct intents | 2/3 (66.67%) |
+| Valid intent-and-response structures | 2/3 (66.67%) |
+| JSON parsed after removing Markdown fences | 3/3 (100%) |
+| Strict JSON without Markdown fences | 0/3 (0%) |
+
+**Interpretation:** This experiment demonstrates zero-shot intent identification and response generation, not overall classification performance. The sample is too small for general performance claims. The model wrapped all three JSON responses in Markdown fences; normalized parsing recovered them, but strict formatting still failed. The third prediction was a different banking label from the reference intent. These are observed errors to retain for P2.12, not results to hide or automatically correct. Banking advice generated by the model still requires human quality and safety review.
+
+### 8.15 P2.13 — Prompting vs RAG vs PEFT
+
+Part 2 contributes the model-side technical comparison needed to decide whether to retain prompt-only inference or consider retrieval and lightweight adaptation. **Only prompt engineering is implemented and experimentally evaluated in this project stage.** RAG and PEFT are proposed alternatives, not completed experiments.
+
+#### A. Prompt engineering (implemented)
+
+Prompt engineering changes the **instructions and context** supplied to the frozen pretrained Qwen model. It does not update model weights. The project compares zero-shot, few-shot, role/context-based, and constrained prompts, along with greedy and sampling-based generation.
+
+- **Strengths:** Minimal setup, no training dataset required for weight updates, inexpensive to iterate on, and easy to compare on the fixed BANKING77 evaluation sample.
+- **Limitations:** Prompt wording can affect predictions; the model can confuse similar intents, generate unsupported banking details, or violate strict output formatting.
+- **Evidence:** `run_part2.py`, `src/prompts/templates.py`, `experiments/prompt_comparison.csv`, and `experiments/p2_5_zero_shot.csv`.
+
+#### B. Retrieval-augmented generation (RAG; proposed)
+
+RAG retrieves relevant passages from a maintained knowledge base (for example, approved bank FAQs, card-support policies, or account-opening eligibility rules) and places them into the model's prompt before response generation. A typical pipeline is **customer query → retrieval → relevant passages → Qwen prompt → generated answer → source/format checks**.
+
+- **Strengths:** Can ground responses in current, bank-approved information without retraining the language model; source passages can support auditing.
+- **Limitations:** Requires curated documents, indexing/retrieval, access controls, retrieval evaluation, and protection against untrusted retrieved text. Retrieval does not guarantee factual or safe output.
+- **BANKING77 relevance:** More useful for accurate support answers than for the narrow task of choosing one of 77 fixed intent labels. It may reduce unsupported claims about bank-specific policies if trusted documents are available.
+
+#### C. Parameter-efficient fine-tuning (PEFT/LoRA; proposed)
+
+PEFT adapts a pretrained model by training a small subset of additional parameters instead of updating all model weights. With LoRA, trainable low-rank matrices are introduced into selected layers while most original model parameters remain frozen.
+
+- **Strengths:** May improve consistency on recurring domain-specific tasks and reduce reliance on lengthy prompts, using fewer trainable parameters than full fine-tuning.
+- **Limitations:** Requires suitable labelled training data, compute resources, experiment tracking, overfitting checks, and held-out evaluation. Fine-tuning does not by itself provide up-to-date banking policies or guarantee valid JSON.
+- **BANKING77 relevance:** A candidate if prompt-only intent accuracy remains inadequate after systematic evaluation; training must use the official training split and preserve the held-out evaluation set.
+
+#### Comparison and recommendation
+
+| Criterion | Prompt engineering | RAG | PEFT / LoRA |
+|---|---|---|---|
+| Model weights updated? | No | No | Small trainable adaptation |
+| Extra resources | Prompts and evaluation examples | Trusted documents and retrieval pipeline | Training data and compute |
+| Main benefit | Rapid behavior control and baseline comparison | Grounding answers in source material | Task/domain adaptation |
+| Main risk | Sensitivity to instructions and formatting errors | Poor retrieval or untrusted content | Overfitting, training cost, stale learned facts |
+| Current project status | **Implemented** | Not implemented | Not implemented |
+
+**Recommendation:** Keep prompt engineering as the Part 2 baseline because it meets the controlled-comparison objective with the available pretrained Qwen model. Consider RAG later if the application needs verifiable, bank-specific policy answers. Consider PEFT only if larger held-out evaluations show that prompt-only intent classification remains inadequate and adequate training resources are available. Any future approach should be measured against the same evaluation protocol, including correctness, quality, safety, and formatting.
+
+### 8.16 Part 2 Requirement Completion Matrix
+
+This matrix distinguishes **implemented**, **documented**, and **still needing evidence**; it does not treat a script's existence as proof of a successful experiment.
+
+| ID | Requirement | Status | Evidence / remaining work |
+|---|---|---|---|
+| P2.1 | Select and load model | Complete | Qwen model and tokenizer loaded successfully |
+| P2.2 | Record configuration | Complete for future runs | `experiments/model_configuration.json`; pinned revision and successful loader test; historical revision unverified |
+| P2.3 | Explain architecture | Documented | Section 8.2.2 |
+| P2.4 | Baseline with three outputs | Complete for initial experiment | `experiments/baseline_outputs.csv` |
+| P2.5 | Zero-shot intent and response | Complete for initial verification | Section 8.14 and `experiments/p2_5_zero_shot.csv` |
+| P2.6 | Few-shot examples and selection | Partially documented | Existing two demonstrations; their selection/source has not been verified as training-only |
+| P2.7 | Role/context prompt | Implemented | `src/prompts/templates.py`; E2 comparison |
+| P2.8 | Constrained prompt/output | Implemented; compliance unverified | E2 constrained prompt; verify exact schema and strict-format success before claiming compliance |
+| P2.9 | Greedy decoding | Complete for initial experiment | E3 logs and consistency analysis |
+| P2.10 | Temperature and top-p sampling | Complete for initial experiment | E3 comparison of temperature 0.2/0.7 and top-p 0.9 |
+| P2.11 | Full experiment evidence | Needs audit | Logs exist; verify exact prompts, effective parameters, run identifiers, and model revision in each record |
+| P2.12 | Four-part analysis | Partially complete | Automated metrics and formatting checks exist; manual response-quality scoring pending |
+| P2.13 | Prompting/RAG/PEFT discussion | Documented | Section 8.15; no implementation of RAG/PEFT required by this item |
+
+**Minimal remaining actions for Part 2:** (1) complete the manual review in `experiments/part2_evaluation/manual_review_template.csv`, save it as `experiments/manual_response_scores.csv`, and rerun `scripts.evaluate_part2`; (2) audit P2.11 logs without changing working inference code unless fields are truly missing; (3) briefly document the origin and selection rationale of the existing few-shot demonstrations; and (4) preserve strict JSON failures in the report instead of reporting normalized JSON as strict compliance.
+
 ## 9. Evaluation Protocol and Experiment Tracking
 
 The project will use a consistent evaluation procedure so that results from different experiments can be compared fairly.
@@ -740,8 +943,10 @@ AppliedGenAI-Banking77-Project-Group2/
 ├── scripts/
 │   ├── prepare_evaluation_data.py
 │   ├── evaluate_intents.py
-│   └── evaluate_part2.py
+│   ├── evaluate_part2.py
+│   └── record_model_config.py
 ├── experiments/
+│   ├── model_configuration.json
 │   └── part2_evaluation/
 └── reports/
     └── evaluation_protocol.md
@@ -791,12 +996,17 @@ The team will agree on shared interfaces and evaluation conventions before integ
 ### Model and application development
 
 - [x] Pretrained LLM baseline implemented and evaluated on initial examples.
+- [x] P2.2 model configuration recorded, revision pinned for future runs, and loader verified.
+- [x] P2.3 model architecture and BANKING77 inference flow documented.
 - [x] Zero-shot, few-shot, role-based, and constrained prompts compared in initial experiments.
 - [x] Greedy and sampling-based decoding experiments completed for three queries.
 - [x] Constrained JSON schema and validation added; runtime compliance requires continued testing.
 - [ ] Simulated tool/function flow implemented.
-- [ ] Prompting, RAG, and fine-tuning/PEFT approaches compared.
+- [x] P2.13 prompting, RAG, and PEFT options documented (RAG/PEFT not implemented).
 - [x] Initial intent metrics, variability, and formatting evaluation automated; manual review pending.
+- [x] P2.5 three-intent zero-shot verification recorded (2/3 correct; strict JSON 0/3).
+- [ ] P2.11 experiment evidence audited for exact prompts, effective parameters, and run IDs.
+- [ ] P2.12 human response-quality scoring completed.
 - [ ] Responsible-use risks and controls documented.
 - [ ] Final report, presentation, demo, and contribution statements completed.
 

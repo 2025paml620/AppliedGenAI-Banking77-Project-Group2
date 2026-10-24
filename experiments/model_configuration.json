@@ -1,0 +1,60 @@
+{
+  "recorded_at_utc": "2026-10-24T13:17:05.029774+00:00",
+  "model": {
+    "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+    "model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+    "model_type": "qwen2",
+    "architecture": [
+      "Qwen2ForCausalLM"
+    ],
+    "hidden_size": 1536,
+    "num_hidden_layers": 28,
+    "num_attention_heads": 12,
+    "num_key_value_heads": 2,
+    "vocab_size": 151936
+  },
+  "tokenizer": {
+    "tokenizer_class": "Qwen2TokenizerFast",
+    "vocab_size": 151643,
+    "pad_token": "<|endoftext|>",
+    "eos_token": "<|im_end|>",
+    "padding_side": "right"
+  },
+  "runtime": {
+    "python_version": "3.12.10",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "device": "CPU",
+    "cuda_available": false,
+    "cuda_version": null,
+    "torch_num_threads": 14
+  },
+  "libraries": {
+    "torch": "2.14.1+cpu",
+    "transformers": "4.57.6",
+    "huggingface_hub": "0.36.2",
+    "tokenizers": "0.22.2"
+  },
+  "generation": {
+    "decoding_strategies": {
+      "greedy": {
+        "do_sample": false
+      },
+      "temperature_0_2": {
+        "do_sample": true,
+        "temperature": 0.2,
+        "top_p": 1.0
+      },
+      "temperature_0_7": {
+        "do_sample": true,
+        "temperature": 0.7,
+        "top_p": 1.0
+      },
+      "top_p_0_9": {
+        "do_sample": true,
+        "temperature": 0.7,
+        "top_p": 0.9
+      }
+    },
+    "default_max_new_tokens": 140
+  }
+}
