@@ -1,0 +1,14 @@
+{
+  "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+  "evaluation_csv": "data/evaluation_sample.csv",
+  "num_allowed_intents": 77,
+  "evaluated_samples": 77,
+  "distinct_actual_intents": 77,
+  "valid_predictions": 75,
+  "invalid_predictions": 2,
+  "correct_predictions": 35,
+  "accuracy": 0.454545,
+  "valid_prediction_rate": 0.974026,
+  "accuracy_on_valid_only": 0.466667,
+  "method": "zero-shot closed-set classification; greedy decoding; no fine-tuning"
+}

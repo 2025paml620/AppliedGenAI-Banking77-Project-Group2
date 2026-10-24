@@ -1,0 +1,13 @@
+query,strategy,repetitions,unique_responses,unique_response_rate,all_repetitions_identical
+Can I use Apple Pay to top up?,greedy,3,1,0.333333,True
+Can I use Apple Pay to top up?,temperature_0_2,3,3,1.0,False
+Can I use Apple Pay to top up?,temperature_0_7,3,3,1.0,False
+Can I use Apple Pay to top up?,top_p_0_9,3,3,1.0,False
+I need help activating my new card.,greedy,3,1,0.333333,True
+I need help activating my new card.,temperature_0_2,3,3,1.0,False
+I need help activating my new card.,temperature_0_7,3,3,1.0,False
+I need help activating my new card.,top_p_0_9,3,3,1.0,False
+how old do i need to be to get an account for myself,greedy,3,1,0.333333,True
+how old do i need to be to get an account for myself,temperature_0_2,3,3,1.0,False
+how old do i need to be to get an account for myself,temperature_0_7,3,3,1.0,False
+how old do i need to be to get an account for myself,top_p_0_9,3,3,1.0,False
