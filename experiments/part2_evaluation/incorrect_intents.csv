@@ -1,0 +1,43 @@
+sample_id,query,actual_intent,predicted_intent,correct,raw_prediction
+test_02969,Can I use Apple Pay to top up?,apple_pay_or_google_pay,top_up_by_card_charge,False,top_up_by_card_charge
+test_00334,Are there limits on auto top-up?,automatic_top_up,top_up_limits,False,top_up_limits
+test_02693,I made a transfer and am still waiting.,balance_not_updated_after_bank_transfer,pending_transfer,False,pending_transfer
+test_01052,I made a deposit this morning but it is still pending?,balance_not_updated_after_cheque_or_cash_deposit,pending_cash_withdrawal,False,pending_cash_withdrawal
+test_02187,I couldn't make a transfer to a beneficiary!,beneficiary_not_allowed,transfer_not_received_by_recipient,False,transfer_not_received_by_recipient
+test_02924,The expiration date on my card is coming up,card_about_to_expire,card_arrival,False,card_arrival
+test_00285,Can you get me my card fast?,card_delivery_estimate,get_physical_card,False,get_physical_card
+test_00041,I would like to reactivate my card.,card_linking,activate_my_card,False,activate_my_card
+test_00820,Will I always be charged a fee for using my card?,card_payment_fee_charged,transfer_fee_charged,False,transfer_fee_charged
+test_01102,"I'm concerned about a payment that has recently been made on my card.  I do not recognize the name that the transaction went to, can you help me?",card_payment_not_recognised,request_refund,False,request_refund
+test_00129,My exchange went wrong. I swapped Russian Ruble for UK pounds and was charged too much.,card_payment_wrong_exchange_rate,exchange_rate,False,exchange_rate
+test_02888,Why is there an extra charge for money that was withdrawn?,cash_withdrawal_charge,extra_charge_on_statement,False,extra_charge_on_statement
+test_02742,There is an unauthorized cash withdrawal from my account for 500£.  I definitely didn't make this withdrawal.  I need your help.,cash_withdrawal_not_recognised,declined_cash_withdrawal,False,declined_cash_withdrawal
+test_03055,Is it possible to get a card if I'm not in the UK?,country_support,get_physical_card,False,get_physical_card
+test_01726,"How can I fix my card, it got declined twice.",declined_transfer,declined_card_payment,False,declined_card_payment
+test_01486,someone stole my money,direct_debit_payment_not_recognised,declined_cash_withdrawal,False,declined_cash_withdrawal
+test_01373,"If I have more than one disposable card, can I make five payments on each of them?",disposable_card_limits,get_disposable_virtual_card,False,get_disposable_virtual_card
+test_00093,Is it a good time to exchange?,exchange_rate,exchange_via_app,False,exchange_via_app
+test_00420,What is the best way to exchange currency?,exchange_via_app,,False,exchange_currency
+test_00172,When will the $1 transaction be credited to me?,extra_charge_on_statement,pending_transfer,False,pending_transfer
+test_02283,"Fix your system. I can't make transfers, I've tried like 5 times already.",failed_transfer,transfer_fee_charged,False,transfer_fee_charged
+test_01245,How do I set-up my PIN for the new card?,get_physical_card,change_pin,False,change_pin
+test_02411,Do you offer multiple cards for the same account?,getting_spare_card,supported_cards_and_currencies,False,supported_cards_and_currencies
+test_00920,Where can I obtain my virtual card?,getting_virtual_card,get_physical_card,False,get_physical_card
+test_02487,I want to order a card. Where do you deliver to?,order_physical_card,get_physical_card,False,get_physical_card
+test_01621,I made a purchase and it says it's pending. What does that mean?,pending_card_payment,pending_transfer,False,pending_transfer
+test_01841,How long for money transfer to show?,pending_transfer,transfer_timing,False,transfer_timing
+test_00535,Can you unlock my pin? I think I entered the wrong pin too many times.,pin_blocked,change_pin,False,change_pin
+test_02246,Do I need to choose GBP to get my salary deposited properly?,receiving_money,fiat_currency_support,False,fiat_currency_support
+test_01686,I would like a refund for something I bought,request_refund,Refund_not_showing_up,False,Refund_not_showing_up
+test_00880,"To add money to my account, what currencies can I use?",supported_cards_and_currencies,fiat_currency_support,False,fiat_currency_support
+test_00605,Are SWIFT transfers accepted?,top_up_by_bank_transfer_charge,supported_cards_and_currencies,False,supported_cards_and_currencies
+test_01006,The app wouldn't accept my top up.,top_up_reverted,top_up_failed,False,top_up_failed
+test_01327,Why can't I see my topup in my wallet anymore?,topping_up_by_card,,False,top_up_not_updated
+test_01967,I have a duplicate payment showing up on the app. How do I stop myself being charged for the thing twice?,transaction_charged_twice,Refund_not_showing_up,False,Refund_not_showing_up
+test_02213,"I recently got a new place while I'm staying abroad and have been using this account to manage payments, but suddenly I am seeing fees increase. Where are these additional fees coming from?",transfer_fee_charged,exchange_charge,False,exchange_charge
+test_01208,app does not recognize me,unable_to_verify_identity,declined_card_payment,False,declined_card_payment
+test_02384,How do I go forth verifying my top-up card?,verify_top_up,verify_my_identity,False,verify_my_identity
+test_02535,Why isn't my virtual card working?,virtual_card_not_working,card_not_working,False,card_not_working
+test_01175,I don't like that I have to fill out so much information about my identity.,why_verify_identity,verify_my_identity,False,verify_my_identity
+test_00764,I got less cash than the one I specified in the ATM,wrong_amount_of_cash_received,cash_withdrawal_not_recognised,False,cash_withdrawal_not_recognised
+test_02585,why is the exchange rate for a Foreign ATM different,wrong_exchange_rate_for_cash_withdrawal,exchange_rate,False,exchange_rate

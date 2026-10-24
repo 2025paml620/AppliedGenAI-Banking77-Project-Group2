@@ -1,0 +1,54 @@
+{
+  "intent_correctness": {
+    "status": "evaluated",
+    "samples": 77,
+    "correct": 35,
+    "incorrect": 42,
+    "accuracy": 0.454545,
+    "macro_f1": 0.367965,
+    "macro_f1_class_count": 77,
+    "invalid_predictions": 2,
+    "invalid_prediction_rate": 0.025974,
+    "note": "Macro-F1 is over configured labels or labels present as ground truth."
+  },
+  "response_quality": {
+    "status": "awaiting_manual_review",
+    "review_candidates": 15,
+    "note": "Fill scores in manual_response_scores.csv and rerun. Blank cells are not scored."
+  },
+  "variability": {
+    "status": "evaluated",
+    "compared_query_strategy_groups": 12,
+    "by_strategy": [
+      {
+        "strategy": "greedy",
+        "query_groups": 3,
+        "mean_unique_response_rate": 0.333333,
+        "fully_consistent_groups": 3
+      },
+      {
+        "strategy": "temperature_0_2",
+        "query_groups": 3,
+        "mean_unique_response_rate": 1.0,
+        "fully_consistent_groups": 0
+      },
+      {
+        "strategy": "temperature_0_7",
+        "query_groups": 3,
+        "mean_unique_response_rate": 1.0,
+        "fully_consistent_groups": 0
+      },
+      {
+        "strategy": "top_p_0_9",
+        "query_groups": 3,
+        "mean_unique_response_rate": 1.0,
+        "fully_consistent_groups": 0
+      }
+    ],
+    "note": "Exact textual consistency only; semantic similarity is not measured."
+  },
+  "formatting": {
+    "status": "not_evaluated",
+    "reason": "JSON not declared mandatory in evaluation_config.yaml"
+  }
+}

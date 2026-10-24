@@ -1,0 +1,5 @@
+strategy,query_groups,mean_unique_response_rate,fully_consistent_groups
+greedy,3,0.333333,3
+temperature_0_2,3,1.0,0
+temperature_0_7,3,1.0,0
+top_p_0_9,3,1.0,0

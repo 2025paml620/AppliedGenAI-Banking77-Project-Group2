@@ -1,0 +1,20 @@
+criterion,metric,value
+intent_correctness,status,evaluated
+intent_correctness,samples,77
+intent_correctness,correct,35
+intent_correctness,incorrect,42
+intent_correctness,accuracy,0.454545
+intent_correctness,macro_f1,0.367965
+intent_correctness,macro_f1_class_count,77
+intent_correctness,invalid_predictions,2
+intent_correctness,invalid_prediction_rate,0.025974
+intent_correctness,note,Macro-F1 is over configured labels or labels present as ground truth.
+response_quality,status,awaiting_manual_review
+response_quality,review_candidates,15
+response_quality,note,Fill scores in manual_response_scores.csv and rerun. Blank cells are not scored.
+variability,status,evaluated
+variability,compared_query_strategy_groups,12
+variability,by_strategy,"[{""strategy"": ""greedy"", ""query_groups"": 3, ""mean_unique_response_rate"": 0.333333, ""fully_consistent_groups"": 3}, {""strategy"": ""temperature_0_2"", ""query_groups"": 3, ""mean_unique_response_rate"": 1.0, ""fully_consistent_groups"": 0}, {""strategy"": ""temperature_0_7"", ""query_groups"": 3, ""mean_unique_response_rate"": 1.0, ""fully_consistent_groups"": 0}, {""strategy"": ""top_p_0_9"", ""query_groups"": 3, ""mean_unique_response_rate"": 1.0, ""fully_consistent_groups"": 0}]"
+variability,note,Exact textual consistency only; semantic similarity is not measured.
+formatting,status,not_evaluated
+formatting,reason,JSON not declared mandatory in evaluation_config.yaml
