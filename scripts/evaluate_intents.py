@@ -121,8 +121,7 @@ def main() -> None:
     parser.add_argument("--evaluation_csv", default="data/evaluation_sample.csv")
     parser.add_argument("--limit", type=int, default=None,
                         help="Number of queries to evaluate; omit for the full CSV")
-    parser.add_a
-    rgument("--diverse_intents", action="store_true",
+    parser.add_argument("--diverse_intents", action="store_true",
                         help="When using --limit, prefer distinct intents first")
     parser.add_argument("--output_dir", default="experiments")
     evaluate(parser.parse_args())
