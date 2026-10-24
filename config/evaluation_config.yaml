@@ -1,0 +1,35 @@
+# BANKING77 Part 2 / P2.12 evaluation settings
+# Paths are relative to the repository root.
+inputs:
+  intent_predictions: experiments/intent_predictions.csv
+  baseline: experiments/baseline_outputs.csv
+  prompts: experiments/prompt_comparison.csv
+  decoding: experiments/decoding_comparison.csv
+  manual_scores: experiments/manual_response_scores.csv
+
+output_dir: experiments/part2_evaluation
+
+intent:
+  # Leave empty to evaluate every ground-truth class present in the CSV.
+  # For the 77-class one-example-per-intent evaluation, this is 77 classes.
+  labels: []
+  invalid_labels_count_as_incorrect: true
+
+response_quality:
+  score_min: 1
+  score_max: 5
+  criteria: [relevance, clarity, helpfulness, safety, formatting]
+  # Blank score cells remain unscored. Never infer quality from response length.
+
+variability:
+  # Group by customer query and decoding strategy; compare repeated generations.
+  normalize_whitespace: true
+
+formatting:
+  # Only check JSON for responses explicitly expected to be JSON.
+  # If your constrained prompt requires JSON, set constrained_prompt_requires_json: true.
+  constrained_prompt_requires_json: false
+  constrained_strategy_keywords: [constrained, json]
+  required_fields: [intent, response, action_required]
+  allowed_actions: [none, contact_bank, block_card_request]
+  allowed_intents_from_intent_predictions: true
