@@ -1,5 +1,5 @@
 """Part 3 demo: structured JSON output + validation + mock tools.
-Usage: python run_part3.py [--evaluation_csv data/evaluation_sample.csv]
+Usage: python run_part3.py [--evaluation_csv data/evaluation_sample.csv] [--rag]
 Greedy decoding; no ground-truth labels are given to the model.
 """
 import argparse
@@ -27,11 +27,11 @@ def load_intents(csv_path: str) -> list[str]:
     return sorted(set(labels))
 
 
-def run_demo(model, tokenizer, intents, queries=DEMO_QUERIES) -> pd.DataFrame:
+def run_demo(model, tokenizer, intents, queries=DEMO_QUERIES, retriever=None) -> pd.DataFrame:
     def generate(prompt):
         return generate_response(model, tokenizer, prompt, {"do_sample": False, "max_new_tokens": 200})
 
-    rows = [handle_query(q, intents, generate) for q in queries]
+    rows = [handle_query(q, intents, generate, retriever=retriever) for q in queries]
     return pd.DataFrame([{**r, "errors": "; ".join(r["errors"]),
                           "tool_result": json.dumps(r["tool_result"])} for r in rows])
 
@@ -39,9 +39,14 @@ def run_demo(model, tokenizer, intents, queries=DEMO_QUERIES) -> pd.DataFrame:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--evaluation_csv", default="data/evaluation_sample.csv")
+    parser.add_argument("--rag", action="store_true", help="add similar labelled train examples to the prompt")
     args = parser.parse_args()
     model, tokenizer = load_model()
-    df = run_demo(model, tokenizer, load_intents(args.evaluation_csv))
+    retriever = None
+    if args.rag:
+        from src.rag.retriever import build_retriever
+        retriever = build_retriever()
+    df = run_demo(model, tokenizer, load_intents(args.evaluation_csv), retriever=retriever)
     out = Path("experiments")
     out.mkdir(exist_ok=True)
     df.to_csv(out / "part3_results.csv", index=False)

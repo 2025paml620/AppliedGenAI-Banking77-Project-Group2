@@ -52,3 +52,17 @@ def test_pipeline_failure_paths():
     assert handle_query("hi", LABELS, gen(unsafe))["status"] == "unsafe_output"
     bad = {"tool": "block_card", "arguments": {"card_last4": "0000"}}
     assert handle_query("block it", LABELS, gen(out(action_required=True, action=bad)))["status"] == "tool_error"
+
+
+def test_retriever_and_rag_prompt():
+    import numpy as np
+    from src.rag.retriever import Retriever
+    vocab = ["stolen", "withdraw", "pending"]
+    encode = lambda texts: np.array([[w in t for w in vocab] for t in texts], dtype=float) + 1e-3
+    r = Retriever(["card stolen", "cash withdraw", "payment pending"],
+                  ["lost_or_stolen_card", "cash_withdrawal_not_recognised", "pending_card_payment"], encode)
+    hits = r.retrieve("my card was stolen", k=1)
+    assert hits[0]["intent"] == "lost_or_stolen_card"
+    seen = []
+    handle_query("my card was stolen", LABELS, lambda p: seen.append(p) or out(), retriever=r, k=1)
+    assert '"card stolen" -> lost_or_stolen_card' in seen[0]

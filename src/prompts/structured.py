@@ -15,11 +15,12 @@ TOOLS_FOR_PROMPT = [
 ]
 
 
-def build_structured_prompt(query: str, allowed_intents: Sequence[str]) -> str:
-    """Contract: input = customer query + label vocabulary; output = JSON with 4 fixed keys."""
+def build_structured_prompt(query: str, allowed_intents: Sequence[str], examples: Sequence[dict] | None = None) -> str:
+    """Contract: query + label vocabulary (+ optional retrieved examples) in; JSON with 4 fixed keys out."""
     if not query or not query.strip():
         raise ValueError("Customer query must not be blank")
     if not allowed_intents:
         raise ValueError("allowed_intents must not be empty")
     return _env.get_template("structured_prompt.j2").render(
-        query=query, labels=sorted(set(allowed_intents)), tools=TOOLS_FOR_PROMPT)
+        query=query, labels=sorted(set(allowed_intents)), tools=TOOLS_FOR_PROMPT,
+        examples=examples)

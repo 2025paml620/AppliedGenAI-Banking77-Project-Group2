@@ -8,15 +8,17 @@ INVALID_FALLBACK = ("Sorry, I could not process that request reliably. "
                     "Please rephrase it or use your bank's official channels.")
 
 
-def handle_query(query: str, allowed_intents, generate_fn) -> dict:
-    """generate_fn(prompt) -> raw model text. Always returns a dict with a safe `final_response`."""
+def handle_query(query: str, allowed_intents, generate_fn, retriever=None, k: int = 5) -> dict:
+    """generate_fn(prompt) -> raw model text. With a retriever, similar labelled examples (RAG) are added.
+    Always returns a dict with a safe `final_response`."""
     out = {"query": query, "status": "ok", "intent": None, "tool": None, "tool_result": None,
            "errors": [], "raw_output": None, "final_response": ""}
     gate = check_input(query)
     if gate.status != "allowed":
         return {**out, "status": "blocked_input", "errors": list(gate.reasons), "final_response": gate.response}
 
-    out["raw_output"] = generate_fn(SYSTEM_SAFETY + "\n\n" + build_structured_prompt(query, allowed_intents))
+    examples = retriever.retrieve(query, k) if retriever else None
+    out["raw_output"] = generate_fn(SYSTEM_SAFETY + "\n\n" + build_structured_prompt(query, allowed_intents, examples))
     data, errors = validate_output(out["raw_output"], allowed_intents)
     if data is None:
         return {**out, "status": "invalid_output", "errors": errors, "final_response": INVALID_FALLBACK}

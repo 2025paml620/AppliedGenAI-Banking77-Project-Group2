@@ -44,6 +44,12 @@ assistant only claims "blocked" when the mock tool confirms it.
 | RAG | Retrieve similar labelled queries / bank policy text to narrow labels and ground answers | Needs index + retriever; adds latency; retrieved examples must exclude the evaluation row |
 | Fine-tuning / PEFT (LoRA) | Best for reliable JSON and label accuracy on 77 classes | Needs training data/GPU, versioning; risk of overfitting; not done in this project |
 
+## RAG (implemented)
+`src/rag/retriever.py` embeds the BANKING77 **train** split (all-MiniLM-L6-v2) and returns the top-k most similar
+labelled queries; they are listed in the prompt as guidance (`handle_query(..., retriever=r, k=5)`, `run_part3.py --rag`).
+Evaluation uses the test split, so no leakage. Compare with `python -m scripts.evaluate_rag` -> `experiments/rag_metrics.json`
+(accuracy with/without RAG, invalid-JSON rate, and retrieval-only top-1 accuracy as a reference).
+
 ## Reliability notes
 - Validation rejects malformed output before any action; tools re-validate arguments independently.
 - Tools are mock-only, so no real transactions are possible.
