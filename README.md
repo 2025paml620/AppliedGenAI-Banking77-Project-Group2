@@ -33,7 +33,7 @@ Use this section as the main entry point for navigating the project.
 | [P2.5 — Zero-Shot Verification](#814-p25--zero-shot-intent-and-response-verification) | Three-intent experiment and observed formatting failures |
 | [P2.13 — Adaptation Options](#815-p213--prompting-vs-rag-vs-peft) | Technical comparison and project recommendation |
 | [Part 2 Completion Matrix](#816-part-2-requirement-completion-matrix) | Verified evidence and remaining actions |
-| [Part 2 — P2.12 Evaluation](#813-intent-classification-and-model-evaluation-p212) | Intent correctness, response quality, variability, and formatting |
+| [Part 2 — P2.12 Evaluation](#813-intent-classification-and-model-evaluation-p212) | Intent correctness, manual response quality by prompt, variability, and formatting |
 | [Gradio Demo](app.py) | Interactive educational banking assistant |
 
 ### Project workstreams
@@ -433,7 +433,7 @@ Responses will be reviewed for:
 4. Consistency across repeated generations.
 5. Compliance with prompt constraints.
 
-Experimental findings will be documented in the Part 2 report.
+Initial experimental findings, including the completed manual review, are documented in Section 8.13.
 
 ### 8.10 Responsible Use
 
@@ -448,7 +448,7 @@ The assistant must not request real banking passwords, PINs or OTPs. It must not
 - Part 2 baseline and prompt/decoding experiments: Completed for the initial three-query run.
 - Zero-shot intent classification: Evaluated on 77 queries (one per intent).
 - Automated P2.12 evaluation: Implemented.
-- Human response-quality review: Pending.
+- Human response-quality review: Completed for 15 responses (three per prompting strategy, including baseline); see Section 8.13.6.
 - Full 231-query intent evaluation: Pending.
 - P2.5 three-intent verification: Completed (2/3 correct; strict JSON 0/3).
 - P2.13 adaptation-options discussion: Documented; no RAG or PEFT implementation claimed.
@@ -641,7 +641,9 @@ experiments/
     ├── variability_by_query.csv
     ├── variability_by_strategy.csv
     ├── formatting_checks.csv
-    └── manual_review_template.csv
+    ├── manual_review_template.csv
+    ├── manual_review_completed_by_prompt.csv
+    └── manual_review_summary_by_prompt.csv
 ```
 
 **Output descriptions:**
@@ -656,6 +658,8 @@ experiments/
 | variability_by_strategy.csv | Aggregated consistency for each decoding strategy |
 | formatting_checks.csv | Structured-output validation results |
 | manual_review_template.csv | Template for human response-quality assessment |
+| manual_review_completed_by_prompt.csv | 15 reviewed responses, individual ratings, comments, and corrected prompting-strategy labels |
+| manual_review_summary_by_prompt.csv | Aggregated mean scores for each prompting strategy |
 
 #### 8.13.5 Response Variability Analysis
 
@@ -689,11 +693,11 @@ A mean unique response rate of 0.3333 for greedy decoding represents one unique 
 
 These results demonstrate that greedy decoding provides greater textual consistency, while sampling introduces response variability.
 
-#### 8.13.6 Response Quality Evaluation
+#### 8.13.6 Response Quality Evaluation — Completed Manual Review
 
-Response quality is evaluated through manual review of generated banking support responses.
+A manual review was completed for **15 generated banking-support responses**, using three responses each from baseline, zero-shot, few-shot, role-based, and constrained prompting. The review used existing experiment outputs; no additional model generation was needed. The reviewed dataset is small, so the results are exploratory rather than definitive.
 
-The evaluation considers five dimensions:
+Each response was rated on a **1–5 scale** (higher is better) for the following dimensions:
 
 | Dimension | Description |
 |---|---|
@@ -703,31 +707,34 @@ The evaluation considers five dimensions:
 | Safety | Whether the response avoids unsafe or unsupported advice |
 | Formatting | Whether the response follows the requested structure |
 
-Each dimension is scored on a scale of 1 to 5.
+The overall quality score for each response is the arithmetic mean of its five dimension scores. The per-strategy averages below are calculated from the three reviewed responses in each group. The initial review template grouped all prompt variants under `prompts`; these labels were corrected by matching the reviewed responses to the original `prompt_comparison.csv` records. Existing human scores were preserved.
 
-The automated evaluator generates:
+**Manual evaluation results (mean score out of 5):**
+
+| Prompt strategy | Responses | Relevance | Clarity | Helpfulness | Safety | Formatting | Overall quality |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Baseline | 3 | 3.67 | 3.33 | 2.67 | 4.00 | 2.33 | **3.20** |
+| Zero-shot | 3 | 4.00 | 4.00 | 3.00 | 4.00 | 4.33 | **3.87** |
+| Few-shot | 3 | 4.00 | 4.00 | 3.00 | 4.00 | 2.33 | **3.47** |
+| Role-based | 3 | 4.00 | 4.00 | 3.00 | 4.00 | 4.33 | **3.87** |
+| Constrained | 3 | 4.00 | 4.00 | 3.00 | 4.00 | 3.00 | **3.60** |
+
+**Findings and interpretation:**
+
+- **Zero-shot and role-based prompting** tied for the highest observed overall quality (**3.87/5**); baseline was lowest (**3.20/5**).
+- The most visible difference between prompt variants was **formatting**: zero-shot and role-based averaged 4.33/5, while few-shot averaged 2.33/5 in this reviewed sample.
+- **Helpfulness** remained modest (3.00/5 for each prompt variant), suggesting that clearer formatting does not necessarily imply more actionable or reliable banking guidance.
+- Reviewer comments identify potentially inaccurate bank-specific instructions, unsupported procedural assumptions, and an unresolved placeholder. Safety ratings of 4.00/5 should not be interpreted as proof that every response is safe or factually correct.
+- With only **three responses per strategy** and subjective ratings, differences are descriptive and cannot establish that one prompt is generally superior.
+
+**Saved review evidence:**
 
 ```text
-experiments/part2_evaluation/manual_review_template.csv
+experiments/part2_evaluation/manual_review_completed_by_prompt.csv
+experiments/part2_evaluation/manual_review_summary_by_prompt.csv
 ```
 
-Reviewers can use this template to score generated responses.
-
-The completed review should be saved as:
-
-```text
-experiments/manual_response_scores.csv
-```
-
-After saving the reviewed scores, rerun:
-
-```powershell
-.\.venv\Scripts\python.exe -m scripts.evaluate_part2 --config config/evaluation_config.yaml
-```
-
-The evaluator then incorporates the available manual scores into the evaluation summary.
-
-**Current status:** Response-quality evaluation is awaiting manual review.
+The first file preserves each query, response, prompting-strategy label, five human scores, and review notes. The second contains the aggregated scores reproduced above. These manual results complement, rather than replace, the automated intent, variability, and formatting evaluations. The automated evaluator's optional input `experiments/manual_response_scores.csv` is a separate ingestion convention; the two review artifacts above are the documented source for this table and should not be described as automatically ingested without verifying the expected schema and rerunning the evaluator.
 
 #### 8.13.7 Formatting Validation
 
@@ -756,7 +763,7 @@ The Part 2 evaluation produced the following findings:
 
 **Intent correctness:** The zero-shot Qwen baseline achieved 45.45% accuracy on the 77-query evaluation subset. Classification errors were observed between semantically similar banking intents.
 
-**Response quality:** Generated responses require human evaluation to assess relevance, clarity, helpfulness, safety, and formatting compliance.
+**Response quality:** Manual review of 15 responses found overall scores ranging from 3.20/5 (baseline) to 3.87/5 (zero-shot and role-based). Helpfulness and factual reliability remain improvement areas; see Section 8.13.6.
 
 **Response variability:** Greedy decoding demonstrated complete repetition consistency in the tested queries. Sampling strategies produced more varied responses.
 
@@ -770,7 +777,7 @@ Potential improvements include:
 2. Introducing few-shot intent classification examples without using held-out evaluation answers.
 3. Evaluating the complete 231-query dataset.
 4. Strengthening constrained response generation using explicit output schemas.
-5. Completing manual response-quality scoring.
+5. Expanding manual response-quality review beyond three responses per strategy and considering independent reviewers.
 6. Comparing updated model results against the initial baseline.
 
 #### 8.13.10 Reproducibility
@@ -872,10 +879,10 @@ This matrix distinguishes **implemented**, **documented**, and **still needing e
 | P2.9 | Greedy decoding | Complete for initial experiment | E3 logs and consistency analysis |
 | P2.10 | Temperature and top-p sampling | Complete for initial experiment | E3 comparison of temperature 0.2/0.7 and top-p 0.9 |
 | P2.11 | Full experiment evidence | Needs audit | Logs exist; verify exact prompts, effective parameters, run identifiers, and model revision in each record |
-| P2.12 | Four-part analysis | Partially complete | Automated metrics and formatting checks exist; manual response-quality scoring pending |
+| P2.12 | Four-part analysis | Complete for initial evaluation | Automated intent, variability, and formatting analysis plus 15 manually reviewed responses; see Section 8.13.6 |
 | P2.13 | Prompting/RAG/PEFT discussion | Documented | Section 8.15; no implementation of RAG/PEFT required by this item |
 
-**Minimal remaining actions for Part 2:** (1) complete the manual review in `experiments/part2_evaluation/manual_review_template.csv`, save it as `experiments/manual_response_scores.csv`, and rerun `scripts.evaluate_part2`; (2) audit P2.11 logs without changing working inference code unless fields are truly missing; (3) briefly document the origin and selection rationale of the existing few-shot demonstrations; and (4) preserve strict JSON failures in the report instead of reporting normalized JSON as strict compliance.
+**Minimal remaining actions for Part 2:** (1) save the completed manual review and by-prompt summary artifacts under `experiments/part2_evaluation/`; (2) audit P2.11 logs without changing working inference code unless fields are truly missing; (3) briefly document the origin and selection rationale of the existing few-shot demonstrations; and (4) preserve strict JSON failures in the report instead of reporting normalized JSON as strict compliance.
 
 ## 9. Evaluation Protocol and Experiment Tracking
 
@@ -1003,10 +1010,10 @@ The team will agree on shared interfaces and evaluation conventions before integ
 - [x] Constrained JSON schema and validation added; runtime compliance requires continued testing.
 - [ ] Simulated tool/function flow implemented.
 - [x] P2.13 prompting, RAG, and PEFT options documented (RAG/PEFT not implemented).
-- [x] Initial intent metrics, variability, and formatting evaluation automated; manual review pending.
+- [x] Initial intent metrics, variability, and formatting evaluation automated; manual review completed for 15 responses.
 - [x] P2.5 three-intent zero-shot verification recorded (2/3 correct; strict JSON 0/3).
 - [ ] P2.11 experiment evidence audited for exact prompts, effective parameters, and run IDs.
-- [ ] P2.12 human response-quality scoring completed.
+- [x] P2.12 human response-quality scoring completed for initial 15-response sample.
 - [ ] Responsible-use risks and controls documented.
 - [ ] Final report, presentation, demo, and contribution statements completed.
 
