@@ -5,6 +5,7 @@ Ground-truth labels are used for scoring only. Retrieval corpus = train split.
 """
 import argparse
 import json
+import logging
 from pathlib import Path
 
 import pandas as pd
@@ -13,15 +14,21 @@ from run_part3 import load_intents
 from src.model.llm_baseline import generate_response, load_model
 from src.rag.retriever import build_retriever
 from src.structured.pipeline import handle_query
+from src.logging_config import configure_logging
+
+logger = logging.getLogger(__name__)
 
 
 def main():
+    """Compare intent predictions with and without train-only retrieval context."""
+    configure_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument("--evaluation_csv", default="data/evaluation_sample.csv")
     parser.add_argument("--limit", type=int, default=77)
     parser.add_argument("--k", type=int, default=5)
     parser.add_argument("--output_dir", default="experiments")
     args = parser.parse_args()
+    logger.info("Starting RAG comparison: limit=%d neighbors=%d", args.limit, args.k)
 
     df = pd.read_csv(args.evaluation_csv)
     intents = load_intents(args.evaluation_csv)
@@ -53,6 +60,8 @@ def main():
     out.to_csv(out_dir / "rag_comparison.csv", index=False)
     (out_dir / "rag_metrics.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
     print(json.dumps(metrics, indent=2))
+    logger.info("RAG comparison complete: no_rag_accuracy=%.4f rag_accuracy=%.4f", metrics["accuracy_no_rag"], metrics["accuracy_rag"])
+    logger.info("Saved RAG comparison artifacts under %s", out_dir)
 
 
 if __name__ == "__main__":

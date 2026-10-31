@@ -31,6 +31,10 @@ INJECTION = re.compile(
     r"reveal (?:your |the )?(?:system prompt|hidden instructions)|"
     r"disable (?:the )?(?:safety|guardrails)|bypass (?:the )?(?:safety|guardrails))"
 )
+HARMFUL_BANKING_ACTION = re.compile(
+    r"(?i)\b(?:hack|break\s+into|exploit|compromise|steal|rob|siphon|drain|launder|embezzle)\b"
+    r".{0,100}\b(?:bank|banking|server|user|customer|account|money|funds|cash|payment|database|system)\b"
+)
 
 @dataclass(frozen=True)
 class SafetyResult:
@@ -40,16 +44,20 @@ class SafetyResult:
 
 
 def redact_sensitive(text: str) -> str:
+    """Replace clearly labeled secrets and full card numbers in text before logging."""
     text = SECRET.sub(lambda m: m.group(0).replace(m.group(1), "[REDACTED]"), str(text))
     return CARD.sub("[REDACTED_CARD_NUMBER]", text)
 
 
 def check_input(query: str) -> SafetyResult:
+    """Block recognized secrets, instruction overrides, and explicit banking abuse requests."""
     reasons = []
     if SECRET.search(query) or CARD.search(query):
         reasons.append("sensitive_input")
     if INJECTION.search(query):
         reasons.append("prompt_injection_pattern")
+    if HARMFUL_BANKING_ACTION.search(query):
+        reasons.append("harmful_banking_action")
     if reasons:
         return SafetyResult(INPUT_FALLBACK if "sensitive_input" in reasons else SAFE_FALLBACK,
                             "blocked_input", tuple(reasons))
@@ -57,6 +65,7 @@ def check_input(query: str) -> SafetyResult:
 
 
 def check_output(response: str) -> SafetyResult:
+    """Replace outputs that request secrets, claim unverified actions, or guarantee outcomes."""
     reasons = []
     if SECRET.search(response) or CARD.search(response):
         reasons.append("sensitive_output")
@@ -76,7 +85,7 @@ def check_output(response: str) -> SafetyResult:
 
 
 def guarded_generate(query, prompt, generate_fn):
-    """generate_fn receives a safety-prefixed prompt and returns model text."""
+    """Gate the input, prefix safety rules, generate once, and validate the returned text."""
     input_check = check_input(query)
     if input_check.status != "allowed":
         return input_check

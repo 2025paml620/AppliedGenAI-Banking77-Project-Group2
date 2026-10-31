@@ -9,15 +9,20 @@ Ground-truth intent is used for scoring ONLY, never for model prompting.
 
 import argparse
 import json
+import logging
 from pathlib import Path
 
 import pandas as pd
 
 from src.model.intent_classifier import predict_intent
 from src.model.llm_baseline import MODEL_ID, load_model
+from src.logging_config import configure_logging
+
+logger = logging.getLogger(__name__)
 
 
 def load_evaluation_data(csv_path: Path) -> tuple[pd.DataFrame, list[str]]:
+    """Load and validate evaluation rows, returning data and the public label set."""
     if not csv_path.is_file():
         raise FileNotFoundError(f"Evaluation CSV not found: {csv_path}")
 
@@ -40,11 +45,13 @@ def load_evaluation_data(csv_path: Path) -> tuple[pd.DataFrame, list[str]]:
     # are provided to Qwen. The vocabulary should contain all 77 BANKING77 labels.
     allowed_intents = sorted(df["intent"].astype(str).unique().tolist())
     if len(allowed_intents) != 77:
+        logger.warning("Found %d labels, expected all 77 BANKING77 intents", len(allowed_intents))
         print(f"WARNING: Found {len(allowed_intents)} labels, expected 77 BANKING77 intents.", flush=True)
     return df, allowed_intents
 
 
 def evaluate(args: argparse.Namespace) -> None:
+    """Run closed-set inference over selected rows and save predictions and metrics."""
     df, allowed_intents = load_evaluation_data(Path(args.evaluation_csv))
 
     if args.limit is not None:
@@ -57,6 +64,8 @@ def evaluate(args: argparse.Namespace) -> None:
             df = df.sort_values(["_round", "intent", "sample_id"]).drop(columns="_round")
         df = df.head(args.limit).copy()
 
+    logger.info("Starting intent evaluation with %d queries and %d allowed labels", len(df), len(allowed_intents))
+    logger.info("Using model %s", MODEL_ID)
     print(f"Model: {MODEL_ID}", flush=True)
     print(f"Evaluating {len(df)} queries; label vocabulary: {len(allowed_intents)} intents", flush=True)
     model, tokenizer = load_model()  # Load Qwen ONCE, not for every query.
@@ -77,6 +86,7 @@ def evaluate(args: argparse.Namespace) -> None:
             "correct": prediction == actual,
         }
         rows.append(record)
+        logger.info("Intent sample %s: valid=%s correct=%s", record["sample_id"], record["valid_prediction"], record["correct"])
         print(f"[{index}/{len(df)}] {record['sample_id']}: "
               f"predicted={prediction or '[INVALID]'} actual={actual} "
               f"correct={record['correct']}", flush=True)
@@ -114,9 +124,13 @@ def evaluate(args: argparse.Namespace) -> None:
     print(f"Accuracy (invalid counted as wrong): {correct}/{total} = {metrics['accuracy']:.2%}")
     print(f"Valid label rate: {valid}/{total} = {metrics['valid_prediction_rate']:.2%}")
     print(f"Saved: {results_path}, {metrics_path}, {errors_path}")
+    logger.info("Intent evaluation complete: accuracy=%.4f valid_rate=%.4f", metrics["accuracy"], metrics["valid_prediction_rate"])
+    logger.info("Saved intent evaluation artifacts under %s", out_dir)
 
 
 def main() -> None:
+    """Parse evaluation options and start the intent evaluation run."""
+    configure_logging()
     parser = argparse.ArgumentParser(description="Evaluate Qwen intent classification on BANKING77")
     parser.add_argument("--evaluation_csv", default="data/evaluation_sample.csv")
     parser.add_argument("--limit", type=int, default=None,

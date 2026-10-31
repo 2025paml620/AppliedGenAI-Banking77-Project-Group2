@@ -19,11 +19,12 @@ def build_zero_shot_intent_response_prompt(customer_query: str, allowed_intents:
 
 
 def build_prompt(customer_query: str, prompt_variant: str = "constrained", predicted_intent: str | None = None) -> str:
+    """Build a customer response prompt for one supported Part 2 strategy."""
     if prompt_variant not in {"zero_shot", "few_shot", "role_based", "constrained"}:
         raise ValueError("Unknown prompt variant")
     intent_context = f"Predicted intent (may be incorrect): {predicted_intent}\n" if predicted_intent else ""
     if prompt_variant == "zero_shot":
-        return f"Answer this banking customer question clearly.\nCustomer: {customer_query}\nAnswer:"
+        return f"Answer this banking customer question clearly.\n{intent_context}Customer: {customer_query}\nAnswer:"
     if prompt_variant == "few_shot":
         shots = "\n".join(f"Customer: {q}\nResponse: {a}" for q,a in EXAMPLES)
         return f"You assist banking customers.\n{shots}\n{intent_context}Customer: {customer_query}\nResponse:"

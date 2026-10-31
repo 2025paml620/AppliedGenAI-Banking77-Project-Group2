@@ -16,6 +16,9 @@ Tools:
 - "{{ tool.name }}": arguments {{ tool.arguments }}  ({{ tool.when }})
 {% endfor -%}
 Example: {"intent": "cash_withdrawal_not_recognised", "response": "Please review the transaction in your official app.", "action_required": false, "action": null}
+{% if required_action_json %}
+Mandatory tool routing for this query: set "action_required" to true and copy this exact action into "action": {{ required_action_json }}. This query-specific routing requirement takes precedence over the general example above; do not return action:null.
+{% endif %}
 <customer_message>
 {{ query }}
 </customer_message>

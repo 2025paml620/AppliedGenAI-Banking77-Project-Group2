@@ -35,6 +35,17 @@ Use this section as the main entry point for navigating the project.
 | [Part 2 Completion Matrix](#816-part-2-requirement-completion-matrix) | Verified evidence and remaining actions |
 | [Part 2 — P2.12 Evaluation](#813-intent-classification-and-model-evaluation-p212) | Intent correctness, manual response quality by prompt, variability, and formatting |
 | [Gradio Demo](app.py) | Interactive educational banking assistant |
+| [Model Test Suite](reports/model_test_report.md) | Synthetic cases for both execution paths |
+| [Integrated Group Notebook](notebooks/group_project.ipynb) | End-to-end evaluation and run artifacts |
+| [Part 4 Handover](reports/PART4_HANDOVER.md) | Requirement evidence, gaps, and final checks |
+| [Run Guide](RUN_GUIDE.md) | Individual commands for tests, demos, evaluation, and failure review |
+| [Project Submission](project_submission.md) | Group roster, repository links, and submission run commands |
+| [Experiment Comparison](experiments/comparison_summary.md) | Consolidated experiment evidence and caveats |
+| [Failure Analysis](experiments/failure_analysis.csv) | Representative failures and mitigations |
+| [Demo Plan](reports/demo_plan.md) | 8–10 minute demonstration outline |
+| [Contribution Record](reports/contributions.md) | Member confirmation template |
+| [Contribution Guidance](CONTRIBUTING.md) | Shared interface and repository conventions |
+| [Model Test Suite](reports/model_test_report.md) | Run current pipeline cases and review outputs |
 
 ### Project workstreams
 
@@ -134,6 +145,18 @@ This is an educational prototype, not a production banking service. It will not 
 
 ## 6. Development Setup
 
+### 6.0 Run the pipeline checks
+
+After installing dependencies, run the deterministic end-to-end checks (they use a stub model response and mock tools, so they do not download model weights):
+
+```powershell
+python -m pytest tests
+```
+
+The end-to-end checks cover safe prompt construction, structured validation, mock tool execution, invalid JSON rejection, and input/output guardrail failures. Set `BANKING77_LOG_LEVEL=DEBUG` to increase console logging; customer query text and tool arguments are intentionally excluded from application logs.
+
+Use the unified command `python -m scripts.run_pipeline --mode suite` for the 90-case model-backed evaluation. Select `--mode query` or `--mode demo` for one query or the eight Part 3 demonstration prompts; add `--rag` to any mode. All runs use the same structured pipeline and save timestamped CSV, Markdown, and JSON artifacts under `experiments/model_test_runs/`. Use `--mode suite --limit 5` for a short smoke run. See [RUN_GUIDE.md](RUN_GUIDE.md) for commands and mode details.
+
 ### 6.1 Prerequisites
 
 - Python 3.12
@@ -187,6 +210,10 @@ evaluation_df = pd.read_csv("../data/evaluation_sample.csv")
 ```
 
 The Python script should continue to be run from the project root using the command above.
+
+### 6.6 Launch the interactive assistant
+
+From the project root, run `python app.py`. Choose **Prompted response** for intent classification with prompt and decoding controls, or **Structured response + tools** for validated JSON and simulated tools (`card_status`, `block_card`, and `transaction_status`). Select **RAG** or **Non-RAG** under **Knowledge retrieval**; RAG retrieves examples from the Banking77 training split. Choose a sample prompt to fill **Customer Query**. A prominent warning identifies the educational-only boundary, while input guardrails block obvious credential exposure, prompt injection, and direct requests to hack banking systems or steal customer funds. The result panel shows the complete response object, and the highlighted tool panel shows the suggested action, arguments, and mock result when applicable.
 
 ## 7. Loading Banking77 and Security
 
@@ -1008,8 +1035,8 @@ The team will agree on shared interfaces and evaluation conventions before integ
 - [x] Zero-shot, few-shot, role-based, and constrained prompts compared in initial experiments.
 - [x] Greedy and sampling-based decoding experiments completed for three queries.
 - [x] Constrained JSON schema and validation added; runtime compliance requires continued testing.
-- [ ] Simulated tool/function flow implemented.
-- [x] P2.13 prompting, RAG, and PEFT options documented (RAG/PEFT not implemented).
+- [x] Simulated tool/function flow implemented in the Part 3 pipeline and app.
+- [x] P2.13 prompting, RAG, and PEFT options documented; train-split RAG retrieval implemented, PEFT not implemented.
 - [x] Initial intent metrics, variability, and formatting evaluation automated; manual review completed for 15 responses.
 - [x] P2.5 three-intent zero-shot verification recorded (2/3 correct; strict JSON 0/3).
 - [ ] P2.11 experiment evidence audited for exact prompts, effective parameters, and run IDs.

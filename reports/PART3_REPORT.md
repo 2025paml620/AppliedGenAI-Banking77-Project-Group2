@@ -1,6 +1,6 @@
 # Part 3 — Structured Output, Prompt Template and Tool Interface
 
-Run: `python run_part3.py` (writes `experiments/part3_results.csv`). Tests: `pytest tests/test_structured.py`.
+Run: `python -m scripts.run_pipeline --mode demo` (writes a timestamped run under `experiments/model_test_runs/`). `python run_part3.py` remains a compatibility alias. Tests: `pytest tests/test_structured.py`.
 
 ## Files
 | Task | File |
@@ -19,13 +19,13 @@ Input: customer query + the 77 allowed labels. Output: one JSON object, exactly 
 | `intent` | string | one of the 77 BANKING77 labels |
 | `response` | string | non-empty, passes output guardrails |
 | `action_required` | bool | true iff `action` is not null |
-| `action` | null or `{"tool", "arguments"}` | tool in `block_card`, `transaction_status` |
+| `action` | null or `{"tool", "arguments"}` | tool in `block_card`, `card_status`, `transaction_status` |
 
-Tools: `block_card(card_last4: 4 digits)`, `transaction_status(transaction_id: TXN + 4 digits)`.
+Tools: `block_card(card_last4: 4 digits)`, read-only `card_status(card_last4: 4 digits)`, and `transaction_status(transaction_id: TXN + 4 digits)`. All records are local mock data.
 Arguments must match the required set exactly; unknown cards/transactions raise `ToolError`.
 
 ## Flow
-Query → input guardrail → model JSON → schema validation → output guardrail → tool (mock) → final response.
+Query → input guardrail → explicit identifier routing hint → model JSON → schema validation → output guardrail → mock tool → final response. Explicit transaction IDs and card-last-four lookups enforce their corresponding tool route after schema validation, including when RAG is enabled. The original completion is retained as `model_output`; `raw_output` reflects any required route correction.
 The final text for a tool action is built from the tool result, never from model text, so the
 assistant only claims "blocked" when the mock tool confirms it.
 
