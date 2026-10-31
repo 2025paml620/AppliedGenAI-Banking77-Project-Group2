@@ -147,4 +147,4 @@ The notebook is a reproducible integrated evaluation/demo artifact; it is not a 
 | Run the integrated fixed-sample evaluation                     | `notebooks/group_project.ipynb` | Yes | Per-run CSV and JSON metrics under `experiments/` |
 | Review previously documented weaknesses                        | `experiments/failure_analysis.csv` | No | Failure analysis records |
 
-For definitions and interpretation limits, see [Evaluation Protocol](evaluation_protocol.md), [Part 3 Report](PART3_REPORT.md), and [Part 4 Handover](PART4_HANDOVER.md).
+For definitions and interpretation limits, see [Evaluation Protocol](reports/evaluation_protocol.md), [Part 3 Report](reports/PART3_REPORT.md), and [Part 4 Handover](reports/PART4_HANDOVER.md).

@@ -38,7 +38,8 @@ Use this section as the main entry point for navigating the project.
 | [Model Test Suite](reports/model_test_report.md) | Synthetic cases for both execution paths |
 | [Integrated Group Notebook](notebooks/group_project.ipynb) | End-to-end evaluation and run artifacts |
 | [Part 4 Handover](reports/PART4_HANDOVER.md) | Requirement evidence, gaps, and final checks |
-| [Run Guide](reports/RUN_GUIDE.md) | Individual commands for tests, demos, evaluation, and failure review |
+| [Run Guide](RUN_GUIDE.md) | Individual commands for tests, demos, evaluation, and failure review |
+| [Project Submission](project_submission.md) | Group roster, repository links, and submission run commands |
 | [Experiment Comparison](experiments/comparison_summary.md) | Consolidated experiment evidence and caveats |
 | [Failure Analysis](experiments/failure_analysis.csv) | Representative failures and mitigations |
 | [Demo Plan](reports/demo_plan.md) | 8–10 minute demonstration outline |
@@ -154,7 +155,7 @@ python -m pytest tests
 
 The end-to-end checks cover safe prompt construction, structured validation, mock tool execution, invalid JSON rejection, and input/output guardrail failures. Set `BANKING77_LOG_LEVEL=DEBUG` to increase console logging; customer query text and tool arguments are intentionally excluded from application logs.
 
-Use the unified command `python -m scripts.run_pipeline --mode suite` for the 90-case model-backed evaluation. Select `--mode query` or `--mode demo` for one query or the eight Part 3 demonstration prompts; add `--rag` to any mode. All runs use the same structured pipeline and save timestamped CSV, Markdown, and JSON artifacts under `experiments/model_test_runs/`. Use `--mode suite --limit 5` for a short smoke run. See [RUN_GUIDE.md](reports/RUN_GUIDE.md) for commands and mode details.
+Use the unified command `python -m scripts.run_pipeline --mode suite` for the 90-case model-backed evaluation. Select `--mode query` or `--mode demo` for one query or the eight Part 3 demonstration prompts; add `--rag` to any mode. All runs use the same structured pipeline and save timestamped CSV, Markdown, and JSON artifacts under `experiments/model_test_runs/`. Use `--mode suite --limit 5` for a short smoke run. See [RUN_GUIDE.md](RUN_GUIDE.md) for commands and mode details.
 
 ### 6.1 Prerequisites
 
