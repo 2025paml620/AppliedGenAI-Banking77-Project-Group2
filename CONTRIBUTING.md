@@ -6,7 +6,6 @@
 - Keep the public Banking77 test sample fixed. Never pass its `intent` or `label` into that sample's model prompt.
 - Use mock tools only. Never enter real banking credentials or account data.
 - Record experiment settings and outputs under `experiments/`; document interface changes in the report and README.
-- Before handing work back, summarize files changed, commands run, results, and known limitations. Each member should verify their contribution statement in `reports/contributions.md`.
 - Give every function a short docstring stating its purpose; add a longer one when its inputs, side effects, or safety boundaries need explanation.
 
 ## Shared contracts
