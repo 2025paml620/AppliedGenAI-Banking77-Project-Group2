@@ -9,6 +9,7 @@ from src.data.dataset import (
 
 
 def main():
+    """Regenerate the fixed, balanced sample from the pinned Banking77 test split."""
     # Load Banking77 and create a balanced sample from the official test split.
     dataset = load_banking77()
     evaluation_sample = create_evaluation_sample(

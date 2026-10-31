@@ -16,6 +16,7 @@ TOOLS_FOR_PROMPT = [
 
 
 def build_structured_prompt(query: str, allowed_intents: Sequence[str], examples: Sequence[dict] | None = None) -> str:
+    """Render a JSON-only request using allowed labels, mock tools, and optional examples."""
     """Contract: query + label vocabulary (+ optional retrieved examples) in; JSON with 4 fixed keys out."""
     if not query or not query.strip():
         raise ValueError("Customer query must not be blank")

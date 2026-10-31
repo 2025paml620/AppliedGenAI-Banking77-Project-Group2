@@ -35,6 +35,13 @@ Use this section as the main entry point for navigating the project.
 | [Part 2 Completion Matrix](#816-part-2-requirement-completion-matrix) | Verified evidence and remaining actions |
 | [Part 2 — P2.12 Evaluation](#813-intent-classification-and-model-evaluation-p212) | Intent correctness, manual response quality by prompt, variability, and formatting |
 | [Gradio Demo](app.py) | Interactive educational banking assistant |
+| [Integrated Group Notebook](notebooks/group_project.ipynb) | End-to-end evaluation and run artifacts |
+| [Part 4 Handover](reports/PART4_HANDOVER.md) | Requirement evidence, gaps, and final checks |
+| [Experiment Comparison](experiments/comparison_summary.md) | Consolidated experiment evidence and caveats |
+| [Failure Analysis](experiments/failure_analysis.csv) | Representative failures and mitigations |
+| [Demo Plan](reports/demo_plan.md) | 8–10 minute demonstration outline |
+| [Contribution Record](reports/contributions.md) | Member confirmation template |
+| [Contribution Guidance](CONTRIBUTING.md) | Shared interface and repository conventions |
 
 ### Project workstreams
 
@@ -133,6 +140,16 @@ The project deliverables include a technical report, executable implementation, 
 This is an educational prototype, not a production banking service. It will not access real bank accounts, process financial transactions, or use real customer credentials.
 
 ## 6. Development Setup
+
+### 6.0 Run the pipeline checks
+
+After installing dependencies, run the deterministic end-to-end checks (they use a stub model response and mock tools, so they do not download model weights):
+
+```powershell
+python -m pytest tests
+```
+
+The end-to-end checks cover safe prompt construction, structured validation, mock tool execution, invalid JSON rejection, and input/output guardrail failures. Set `BANKING77_LOG_LEVEL=DEBUG` to increase console logging; customer query text and tool arguments are intentionally excluded from application logs.
 
 ### 6.1 Prerequisites
 

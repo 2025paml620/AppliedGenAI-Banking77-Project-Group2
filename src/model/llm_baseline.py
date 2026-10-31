@@ -1,16 +1,20 @@
 
 """Qwen2.5-1.5B-Instruct model loading and generation."""
 
+import logging
+
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, GenerationConfig
 
 MODEL_ID = "Qwen/Qwen2.5-1.5B-Instruct"
 
 MODEL_REVISION = "989aa7980e4cf806f80c7fef2b1adb7bc71aa306"
+logger = logging.getLogger(__name__)
 
 
 def load_model(model_id: str = MODEL_ID):
-    print("Loading Qwen model...", flush=True)
+    """Load the pinned tokenizer and causal language model for inference."""
+    logger.info("Loading model %s at pinned revision %s", model_id, MODEL_REVISION)
 
     tokenizer = AutoTokenizer.from_pretrained(
         model_id,
@@ -26,7 +30,7 @@ def load_model(model_id: str = MODEL_ID):
 
     model.eval()
 
-    print("Qwen model loaded successfully.", flush=True)
+    logger.info("Model loaded successfully: %s", model_id)
     return model, tokenizer
 
 
@@ -37,6 +41,7 @@ def generate_response(
     prompt: str,
     decoding_config: dict | None = None
 ) -> str:
+    """Format a user prompt, generate tokens with the requested decoding settings, and decode them."""
 
     cfg = dict(decoding_config or {"do_sample": False})
 

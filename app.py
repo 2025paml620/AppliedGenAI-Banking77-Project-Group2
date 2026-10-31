@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -9,9 +10,13 @@ from typing import Any
 import gradio as gr
 import pandas as pd
 
+from src.logging_config import configure_logging
 from src.model.llm_baseline import load_model, generate_response
 from src.model.intent_classifier import predict_intent
 from src.prompts.templates import build_prompt
+
+configure_logging()
+logger = logging.getLogger(__name__)
 from src.safety import guardrails
 
 PROMPT_VARIANTS = ["zero_shot", "few_shot", "role_based", "constrained"]
@@ -25,12 +30,14 @@ SAFE_FALLBACK = (
 
 @lru_cache(maxsize=1)
 def assistant():
+    """Load and cache the shared model/tokenizer pair for the interactive demo."""
     """Reuse the same Qwen model for classification and response generation."""
     return load_model()
 
 
 @lru_cache(maxsize=1)
 def allowed_intents() -> tuple[str, ...]:
+    """Load the public label vocabulary without exposing a row's answer to inference."""
     """Read the BANKING77 label vocabulary, never an individual row's true label."""
     if not EVALUATION_CSV.is_file():
         raise FileNotFoundError(f"Missing intent vocabulary source: {EVALUATION_CSV}")
@@ -42,6 +49,7 @@ def allowed_intents() -> tuple[str, ...]:
 
 
 def _safety_check(text: str, stage: str) -> tuple[dict[str, Any], str]:
+    """Adapt a guardrail result to the simple JSON shape shown in the UI."""
     """Use the exact SafetyResult contract in src/safety/guardrails.py."""
     checker = guardrails.check_input if stage == "input" else guardrails.check_output
     result = checker(text)
@@ -56,6 +64,7 @@ def _safety_check(text: str, stage: str) -> tuple[dict[str, Any], str]:
 
 
 def _parse_json_response(raw: str) -> dict[str, Any]:
+    """Parse a constrained app response and report JSON and field-level validity."""
     cleaned = raw.strip()
     if cleaned.startswith("```"):
         lines = cleaned.splitlines()
@@ -78,6 +87,7 @@ def _parse_json_response(raw: str) -> dict[str, Any]:
 
 
 def run(question: str, variant: str, decoding: str, temperature: float, top_p: float):
+    """Handle one UI submission and return the answer, intent, safety, and debug details."""
     """Return response, predicted intent, safety checks, and generation details."""
     details: dict[str, Any] = {"tool_action": "None executed (educational demo)"}
     question = (question or "").strip()
@@ -136,6 +146,7 @@ def run(question: str, variant: str, decoding: str, temperature: float, top_p: f
         return response_text, intent or "Invalid / unknown", {
             "input": input_safety, "output": output_safety}, details
     except Exception as exc:
+        logger.exception("Assistant request failed (%s)", type(exc).__name__)
         details["error"] = type(exc).__name__
         return "Unable to process this request. Check the terminal for details.", "Unavailable", {
             "input": input_safety, "output": {"status": "not_run"}}, details

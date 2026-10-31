@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.logging_config import configure_logging
 from src.model.llm_baseline import load_model, generate_response
 from src.structured.pipeline import handle_query
 
@@ -23,12 +24,15 @@ DEMO_QUERIES = [
 
 
 def load_intents(csv_path: str) -> list[str]:
+    """Read and sort the distinct public intent labels from the evaluation CSV."""
     labels = pd.read_csv(csv_path, usecols=["intent"])["intent"].dropna().astype(str)
     return sorted(set(labels))
 
 
 def run_demo(model, tokenizer, intents, queries=DEMO_QUERIES, retriever=None) -> pd.DataFrame:
+    """Run the demonstration scenarios through the integrated structured pipeline."""
     def generate(prompt):
+        """Adapt the shared model and fixed greedy settings to the pipeline callback."""
         return generate_response(model, tokenizer, prompt, {"do_sample": False, "max_new_tokens": 200})
 
     rows = [handle_query(q, intents, generate, retriever=retriever) for q in queries]
@@ -37,6 +41,8 @@ def run_demo(model, tokenizer, intents, queries=DEMO_QUERIES, retriever=None) ->
 
 
 def main():
+    """Load model and optional retrieval index, execute demo cases, and save results."""
+    configure_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument("--evaluation_csv", default="data/evaluation_sample.csv")
     parser.add_argument("--rag", action="store_true", help="add similar labelled train examples to the prompt")

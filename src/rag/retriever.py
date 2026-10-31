@@ -20,10 +20,12 @@ class Retriever:
 
     @staticmethod
     def _normalise(vectors) -> np.ndarray:
+        """Scale each embedding to unit length while safely handling zero vectors."""
         vectors = np.asarray(vectors, dtype=np.float32)
         return vectors / np.linalg.norm(vectors, axis=1, keepdims=True).clip(min=1e-12)
 
     def retrieve(self, query: str, k: int = 5) -> list[dict]:
+        """Return up to k nearest training examples, ordered by cosine similarity."""
         scores = self.matrix @ self._normalise(self.encode([query]))[0]
         top = np.argsort(-scores)[:k]
         return [{"text": self.texts[i], "intent": self.intents[i], "score": float(scores[i])} for i in top]

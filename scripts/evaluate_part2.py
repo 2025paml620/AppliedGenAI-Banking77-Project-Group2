@@ -22,6 +22,7 @@ except ImportError as exc:
 
 
 def read_csv(path: Path):
+    """Read a CSV as dictionaries, returning an empty list when it is absent."""
     if not path.exists():
         print(f'[SKIP] Missing file: {path}')
         return []
@@ -30,6 +31,7 @@ def read_csv(path: Path):
 
 
 def write_csv(path: Path, rows, fieldnames):
+    """Write dictionary rows with the requested columns and create parent folders."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('w', encoding='utf-8', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction='ignore')
@@ -38,6 +40,7 @@ def write_csv(path: Path, rows, fieldnames):
 
 
 def pick(row, *names):
+    """Return the first nonblank value matching any case-insensitive column alias."""
     lookup = {str(k).strip().lower(): v for k, v in row.items()}
     for name in names:
         value = lookup.get(name.lower())
@@ -47,6 +50,7 @@ def pick(row, *names):
 
 
 def evaluate_intents(rows, cfg, out):
+    """Score saved intent predictions and write per-class and error tables."""
     if not rows:
         return {'status': 'not_evaluated', 'reason': 'intent predictions CSV unavailable or empty'}
     truth_keys = ('actual_intent', 'true_intent', 'intent', 'ground_truth', 'label')
@@ -106,6 +110,7 @@ def infer_columns(rows):
 
 
 def evaluate_variability(rows, cfg, out):
+    """Compare repeated decoding responses and summarize exact-text variability."""
     if not rows:
         return {'status': 'not_evaluated', 'reason': 'decoding comparison CSV unavailable or empty'}
     normalized = infer_columns(rows)
@@ -146,6 +151,7 @@ def evaluate_variability(rows, cfg, out):
 
 
 def extract_json(text):
+    """Parse a complete JSON object or fenced JSON block without accepting prose."""
     text = text.strip()
     # Accept a complete JSON object or a fenced JSON object; reject explanatory prose.
     match = re.fullmatch(r'```(?:json)?\s*([\s\S]*?)\s*```', text, flags=re.IGNORECASE)
@@ -159,6 +165,7 @@ def extract_json(text):
 
 
 def evaluate_formatting(prompt_rows, decoding_rows, intent_rows, cfg, out):
+    """Measure JSON parsing and schema compliance for constrained prompt outputs."""
     settings = cfg.get('formatting', {})
     if not settings.get('constrained_prompt_requires_json', False):
         return {'status': 'not_evaluated', 'reason': 'JSON not declared mandatory in evaluation_config.yaml'}
@@ -218,6 +225,7 @@ def evaluate_formatting(prompt_rows, decoding_rows, intent_rows, cfg, out):
 
 
 def evaluate_quality(baseline_rows, prompt_rows, manual_rows, cfg, out):
+    """Prepare human review rows and summarize only valid, completed quality scores."""
     settings = cfg.get('response_quality', {})
     criteria = settings.get('criteria', ['relevance', 'clarity', 'helpfulness', 'safety', 'formatting'])
     minimum, maximum = settings.get('score_min', 1), settings.get('score_max', 5)
@@ -256,6 +264,7 @@ def evaluate_quality(baseline_rows, prompt_rows, manual_rows, cfg, out):
 
 
 def main():
+    """Load configured artifacts, run each offline evaluation, and save summaries."""
     parser = argparse.ArgumentParser(description='Evaluate BANKING77 Part 2 CSV outputs (P2.12).')
     parser.add_argument('--config', default='config/evaluation_config.yaml')
     args = parser.parse_args()

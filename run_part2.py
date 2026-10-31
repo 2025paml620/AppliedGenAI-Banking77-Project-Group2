@@ -15,6 +15,7 @@ from src.safety.guardrails import guarded_generate, redact_sensitive
 
 
 def main():
+    """Run the configured baseline, prompt, and decoding comparison experiments."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--evaluation_csv", required=True)
     parser.add_argument("--limit", type=int, default=10)
@@ -36,6 +37,7 @@ def main():
     baseline_rows, prompt_rows, decoding_rows, logs = [], [], [], []
 
     def run_one(q, sid, experiment, variant, decoding, params, repetition=None):
+        """Generate and record one query under a specific experiment configuration."""
         prompt = (f"Answer this banking customer question clearly and safely:\nCustomer: {q}\nAssistant:"
                   if variant == "baseline" else build_prompt(q, variant))
         result = guarded_generate(

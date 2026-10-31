@@ -28,6 +28,7 @@ def parse_output(text):
 
 
 def main():
+    """Run the small guarded zero-shot verification and save its row-level results."""
     parser = argparse.ArgumentParser()
     parser.add_argument('--evaluation_csv', default='data/evaluation_sample.csv')
     parser.add_argument('--limit', type=int, default=3)

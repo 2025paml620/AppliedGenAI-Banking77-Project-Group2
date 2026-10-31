@@ -16,6 +16,7 @@ from huggingface_hub import model_info
 
 
 def main():
+    """Collect model, tokenizer, runtime, and generation metadata for reproducibility."""
     output_dir = Path("experiments")
     output_dir.mkdir(parents=True, exist_ok=True)
 

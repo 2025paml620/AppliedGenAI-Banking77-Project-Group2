@@ -16,6 +16,7 @@ from src.structured.pipeline import handle_query
 
 
 def main():
+    """Compare intent predictions with and without train-only retrieval context."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--evaluation_csv", default="data/evaluation_sample.csv")
     parser.add_argument("--limit", type=int, default=77)

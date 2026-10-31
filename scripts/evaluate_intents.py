@@ -18,6 +18,7 @@ from src.model.llm_baseline import MODEL_ID, load_model
 
 
 def load_evaluation_data(csv_path: Path) -> tuple[pd.DataFrame, list[str]]:
+    """Load and validate evaluation rows, returning data and the public label set."""
     if not csv_path.is_file():
         raise FileNotFoundError(f"Evaluation CSV not found: {csv_path}")
 
@@ -45,6 +46,7 @@ def load_evaluation_data(csv_path: Path) -> tuple[pd.DataFrame, list[str]]:
 
 
 def evaluate(args: argparse.Namespace) -> None:
+    """Run closed-set inference over selected rows and save predictions and metrics."""
     df, allowed_intents = load_evaluation_data(Path(args.evaluation_csv))
 
     if args.limit is not None:
@@ -117,6 +119,7 @@ def evaluate(args: argparse.Namespace) -> None:
 
 
 def main() -> None:
+    """Parse evaluation options and start the intent evaluation run."""
     parser = argparse.ArgumentParser(description="Evaluate Qwen intent classification on BANKING77")
     parser.add_argument("--evaluation_csv", default="data/evaluation_sample.csv")
     parser.add_argument("--limit", type=int, default=None,

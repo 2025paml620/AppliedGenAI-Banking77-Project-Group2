@@ -18,7 +18,7 @@ def extract_json(raw: str):
 
 
 def validate_output(raw: str, allowed_intents: Sequence[str]) -> tuple[dict | None, list[str]]:
-    """Return (parsed, errors). parsed is None unless errors is empty."""
+    """Return validated contract data, or parsing/schema errors when validation fails."""
     data = extract_json(raw)
     if not isinstance(data, dict):
         return None, ["not a valid JSON object"]
