@@ -1,0 +1,19 @@
+[Target: ~2.5 min, ~340 words. Notebook: BANKING77_Part3_Demo_Colab.ipynb. Pre-run Setup, model load and the RAG comparison; cut waits in editing.]
+
+INTRO (~20s)
+Hi, this is Karthikeyan Bose, covering Part 3. Part 1 covered data evaluation and curation, Part 2 covered prompting techniques and decoding. Part 3 covers a reusable prompt template, JSON schema validation, the tool flow, and RAG.
+
+PROMPT TEMPLATE (~15s)
+One function builds every prompt. It injects the 77 allowed intents, the available tools, and the exact JSON format the model must return.
+
+SCHEMA VALIDATION (~25s)
+Small models often break format, so every output is validated. Here are six samples. The valid one passes, and so does one in a markdown fence, which we strip. Plain text, an invented intent, a missing key, and an action mismatch are each rejected with a specific error.
+
+TOOL FLOW (~50s)
+Now the full flow: request, model JSON, validation, mock tool, final response, using Qwen2.5-1.5B on a T4. A stolen card and TXN1002 trigger the block-card and transaction-status tools. TXN9999 returns a clean "not found". "Block my card" without a number is flagged as a missing argument, not guessed. "Charged twice" needs no tool. A message containing a PIN is blocked before reaching the model, and the prompt injection is refused. Tool replies are built from tool results, never raw model text, so a bad generation can't reach the customer.
+
+RAG (~35s)
+To improve intent accuracy, we retrieve the five most similar labelled examples from the BANKING77 train split and add them to the prompt. Evaluation uses the test split, so there's no leakage. For "I lost my card while travelling", every top hit is a lost-or-stolen-card example. Comparing the same test queries with and without RAG, the metrics show the accuracy change, and this table lists where RAG changed the prediction.
+
+LIVE QUERY + CLOSE (~15s)
+Finally, "Block my card ending 5678": the model returns a block-card action, it validates, the mock tool runs, and we get the final response. The comparison of prompting, RAG and PEFT is in the Part 3 report. Thank you.

@@ -37,6 +37,11 @@ Use this section as the main entry point for navigating the project.
 | [Gradio Demo](app.py) | Interactive educational banking assistant |
 | [Model Test Suite](reports/model_test_report.md) | Synthetic cases for both execution paths |
 | [Integrated Group Notebook](notebooks/group_project.ipynb) | End-to-end evaluation and run artifacts |
+| [Part 3 — Structured Output, Tools and RAG](#8a-part-3--structured-output-tool-interface-and-rag) | Prompt template, JSON validation, mock tools, RAG, and adaptation analysis |
+| [Part 3 Report](reports/PART3_REPORT.md) | Contract, flow, failure handling, and prompting vs RAG vs PEFT |
+| [Part 3 Colab Demo](notebooks/BANKING77_Part3_Demo_Colab.ipynb) | Demo notebook for the recorded walkthrough (GPU) |
+| [Part 3 Demo Script](Part3-Script) | Narration script for the Part 3 video |
+| [Part 4 — Integration and Final Delivery](#8b-part-4--integration-evaluation-and-final-delivery) | Integrated pipeline, consolidated evidence, responsible use, and open checks |
 | [Part 4 Handover](reports/PART4_HANDOVER.md) | Requirement evidence, gaps, and final checks |
 | [Run Guide](RUN_GUIDE.md) | Individual commands for tests, demos, evaluation, and failure review |
 | [Project Submission](project_submission.md) | Group roster, repository links, and submission run commands |
@@ -911,6 +916,146 @@ This matrix distinguishes **implemented**, **documented**, and **still needing e
 
 **Minimal remaining actions for Part 2:** (1) save the completed manual review and by-prompt summary artifacts under `experiments/part2_evaluation/`; (2) audit P2.11 logs without changing working inference code unless fields are truly missing; (3) briefly document the origin and selection rationale of the existing few-shot demonstrations; and (4) preserve strict JSON failures in the report instead of reporting normalized JSON as strict compliance.
 
+## 8A. Part 3 — Structured Output, Tool Interface and RAG
+
+### 8A.1 Objective
+
+Part 3 turns the Qwen baseline into a validated application pipeline: one reusable prompt template, a strict JSON contract, simulated banking tools, and train-split retrieval (RAG) to improve intent accuracy. Full detail is in the [Part 3 Report](reports/PART3_REPORT.md).
+
+### 8A.2 Source files
+
+| Task | File |
+|---|---|
+| P3.1–3.2 Prompt contract and template | `src/prompts/structured.py`, `src/prompts/structured_prompt.j2` |
+| P3.3–3.4 JSON schema and validation | `src/structured/schema.py` (`validate_output`) |
+| P3.5–3.7 Mock tools and schemas | `src/tools/banking_tools.py`, `src/tools/tool_routing.py` |
+| P3.8–3.9 End-to-end flow and failure handling | `src/structured/pipeline.py` (`handle_query`) |
+| P3.10 Adaptation analysis | [Part 3 Report](reports/PART3_REPORT.md), Section 8.15 |
+| RAG retriever (train split, `all-MiniLM-L6-v2`) | `src/rag/retriever.py` |
+| RAG evaluation (with vs without RAG) | `scripts/evaluate_rag.py` |
+| P3.11 Valid/invalid examples | `tests/test_structured.py`, `run_part3.py` |
+| Unified runner | `scripts/run_pipeline.py` (`--mode suite`, `query`, or `demo`, `--rag`) |
+| Safety checks | `src/safety/guardrails.py` |
+
+### 8A.3 Output contract
+
+The model returns one JSON object with exactly these keys:
+
+| Field | Rule |
+|---|---|
+| `intent` | One of the 77 BANKING77 labels |
+| `response` | Non-empty and passing output guardrails |
+| `action_required` | `true` if and only if `action` is not null |
+| `action` | `null` or `{"tool", "arguments"}` |
+
+Tools (local mock data only): `block_card(card_last4)`, `card_status(card_last4)`, and `transaction_status(transaction_id)` (`TXN` + 4 digits). Arguments must match the required set exactly.
+
+### 8A.4 Pipeline flow
+
+```text
+Query -> input guardrail -> identifier routing hint -> (optional RAG examples)
+      -> Qwen JSON -> schema validation -> output guardrail -> mock tool -> final response
+```
+
+Tool replies are built from tool results, never from raw model text, so the assistant claims "blocked" only when the mock tool confirms it. Explicit transaction IDs and card-last-four values force the matching tool route after validation, including with RAG.
+
+| Failure | Status | Result |
+|---|---|---|
+| Credentials or prompt injection in query | `blocked_input` | Fixed fallback; model not called |
+| Non-JSON, wrong keys, or invalid label | `invalid_output` | Fixed fallback (no retry) |
+| Unsafe response text | `unsafe_output` | Safe fallback |
+| Bad arguments, unknown ID, or unknown tool | `tool_error` | Explanatory message |
+
+### 8A.5 RAG
+
+For each query, the five most similar labelled examples from the BANKING77 **train** split are added to the prompt as guidance. Evaluation uses the test split, so there is no leakage. Compare accuracy and invalid-JSON rate with and without RAG:
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.evaluate_rag
+```
+
+Results are written to `experiments/rag_metrics.json` (not committed; regenerate to view). RAG improves label selection, not factual bank-policy grounding, and does not guarantee valid output.
+
+### 8A.6 Run Part 3
+
+```powershell
+python -m pytest tests/test_structured.py
+python -m scripts.run_pipeline --mode demo            # eight demo prompts
+python -m scripts.run_pipeline --mode demo --rag      # with retrieval
+python -m scripts.run_pipeline --mode query --rag     # single query
+python app.py                                         # Gradio demo with RAG / Non-RAG toggle
+```
+
+Runs are saved under `experiments/model_test_runs/` as `results.csv`, `report.md`, and `run.json`. See [RUN_GUIDE.md](RUN_GUIDE.md).
+
+### 8A.7 Colab notebooks and demo
+
+| Resource | Purpose |
+|---|---|
+| `notebooks/BANKING77_Part3_Colab.ipynb` | Part 3 pipeline on Colab GPU (T4) |
+| `notebooks/BANKING77_Part3_Demo_Colab.ipynb` | Recorded demo: template, validation, tool flow, RAG comparison, live query |
+| `notebooks/BANKING77_Part3_Colab_Debug.ipynb` | Debugging notebook |
+| `Part3-Script` | ~2.5-minute narration script for the demo |
+
+### 8A.8 Limitations
+
+- Regex guardrails are not a complete defence against unsafe input or output.
+- The 1.5B model may omit an action that applies, or break format; invalid output is rejected, not retried.
+- Tools are mocks; no real banking operations are possible.
+- PEFT/LoRA is analysed but not implemented.
+
+## 8B. Part 4 — Integration, Evaluation and Final Delivery
+
+### 8B.1 Objective
+
+Part 4 integrates the Part 1–3 components into one repository and pipeline, consolidates experiment evidence, documents safety and responsible-use risks, and prepares the final submission. Requirement-level evidence and open actions are in the [Part 4 Handover](reports/PART4_HANDOVER.md).
+
+### 8B.2 Evidence map
+
+| Requirement | Evidence | Status |
+|---|---|---|
+| P4.1 Common repository | `README.md`, `requirements.txt`, `config/`, `src/`, [CONTRIBUTING.md](CONTRIBUTING.md) | In place; verify the lock file matches the supported environment |
+| P4.2 Interfaces | `CONTRIBUTING.md`, [Part 3 Report](reports/PART3_REPORT.md), `src/structured/schema.py` | Consolidated; owners to confirm |
+| P4.3 Integrated pipeline | `src/structured/pipeline.py`, `scripts/run_pipeline.py`, `app.py` | Available via the CLI and Gradio app |
+| P4.4 Run logging | `experiments/experiment_runs.jsonl`, `config/experiment_config.yaml` | Exists; audit historical run IDs and settings |
+| P4.5 Consolidated results | [Experiment Comparison](experiments/comparison_summary.md) | Index supplied; paired comparison pending coverage audit |
+| P4.6 Four-criteria evaluation | Intent metrics, manual review, JSON checks, safety artifacts | Evidence is spread across runs; no single integrated run is checked in |
+| P4.7 Three failures | [Failure Analysis](experiments/failure_analysis.csv) | Documented; verify source rows |
+| P4.8 Responsible use | [Safety README](reports/README_SAFETY.md), [Problem Definition](reports/problem_definition.md) | Expansion pending |
+| P4.9 Reproducibility | Pinned model/dataset revisions, requirements, protocol | Clean-environment run still needs to be recorded by a team member |
+| P4.10 Report consolidation | `reports/PART2_REPORT.md`, `reports/PART3_REPORT.md` | Merge or cross-reference into the final report |
+| P4.11 Demo | [Demo Plan](reports/demo_plan.md) | Plan supplied; rehearse with the model loaded |
+| P4.12 Contributions | [Contribution Record](reports/contributions.md) | Members must confirm their rows |
+| P4.13 Final checks | [Part 4 Handover](reports/PART4_HANDOVER.md) | Open; see 8B.4 |
+
+### 8B.3 Responsible-use summary
+
+- **Hallucination:** the model can invent policies, phone numbers, timelines, or claim an action completed. Only tool-confirmed state is reported.
+- **Privacy:** credentials and real account data must never be submitted. Obvious credentials are blocked and logs exclude query text; regex detection is not a privacy guarantee.
+- **Prompt injection:** customer text is treated as untrusted. Pattern checks catch only known strings; schema validation and exact tool-argument checks limit damage but do not prove authorization.
+- **Reliability:** small balanced sample, sampling variance, invalid JSON, intent errors, mock-only tools, and dependency or hardware drift limit conclusions. Report denominators and revisions.
+
+### 8B.4 Final checklist
+
+- [ ] Each member confirms their contribution statement.
+- [ ] Run from a clean Python 3.12 environment and execute the integrated notebook top to bottom.
+- [ ] Run the integrated evaluation on the agreed sample and save run ID, configuration, sample IDs, outputs, metrics, and failures.
+- [ ] Reconcile prompt/decoding row coverage; compare only matched sample IDs.
+- [ ] Confirm the report and presentation meet length requirements.
+- [ ] Add the demo video URL to [Project Submission](project_submission.md).
+- [ ] Check repository status; do not commit `.idea/`, caches, credentials, or model weights.
+
+### 8B.5 Team and submission
+
+| Part | Member |
+|---|---|
+| 1 | Avinash |
+| 2 | Shubhra |
+| 3 | Karthik |
+| 4 | Abijith |
+
+Repository links, the demo video URL, and submission run commands are in [Project Submission](project_submission.md). Commands are in the [Run Guide](RUN_GUIDE.md); the integrated notebook is [notebooks/group_project.ipynb](notebooks/group_project.ipynb).
+
 ## 9. Evaluation Protocol and Experiment Tracking
 
 The project will use a consistent evaluation procedure so that results from different experiments can be compared fairly.
@@ -951,6 +1096,7 @@ AppliedGenAI-Banking77-Project-Group2/
 ├── README.md
 ├── app.py
 ├── run_part2.py
+├── run_part3.py
 ├── requirements.txt
 ├── .gitignore
 ├── config/
@@ -959,7 +1105,8 @@ AppliedGenAI-Banking77-Project-Group2/
 │   ├── evaluation_sample.csv
 │   └── DATASET_NOTES.md
 ├── notebooks/
-│   └── data_exploration.ipynb
+│   ├── data_exploration.ipynb
+│   └── BANKING77_Part3_*.ipynb
 ├── src/
 │   ├── __init__.py
 │   ├── data/
@@ -970,6 +1117,14 @@ AppliedGenAI-Banking77-Project-Group2/
 │   │   └── intent_classifier.py
 │   ├── prompts/
 │   │   └── templates.py
+│   ├── structured/
+│   │   ├── schema.py
+│   │   └── pipeline.py
+│   ├── tools/
+│   │   ├── banking_tools.py
+│   │   └── tool_routing.py
+│   ├── rag/
+│   │   └── retriever.py
 │   ├── safety/
 │   │   └── guardrails.py
 │   └── evaluation/
@@ -978,12 +1133,16 @@ AppliedGenAI-Banking77-Project-Group2/
 │   ├── prepare_evaluation_data.py
 │   ├── evaluate_intents.py
 │   ├── evaluate_part2.py
+│   ├── evaluate_rag.py
+│   ├── run_pipeline.py
 │   └── record_model_config.py
 ├── experiments/
 │   ├── model_configuration.json
 │   └── part2_evaluation/
 └── reports/
-    └── evaluation_protocol.md
+    ├── evaluation_protocol.md
+    ├── PART3_REPORT.md
+    └── PART4_HANDOVER.md
 ```
 
 This structure separates reusable project logic, execution scripts, exploratory notebooks, generated data, experiment records, and documentation.
@@ -1039,8 +1198,13 @@ The team will agree on shared interfaces and evaluation conventions before integ
 - [x] P2.13 prompting, RAG, and PEFT options documented; train-split RAG retrieval implemented, PEFT not implemented.
 - [x] Initial intent metrics, variability, and formatting evaluation automated; manual review completed for 15 responses.
 - [x] P2.5 three-intent zero-shot verification recorded (2/3 correct; strict JSON 0/3).
+- [x] Part 3 reusable structured prompt template and JSON schema validation implemented.
+- [x] Part 3 mock tools (`block_card`, `card_status`, `transaction_status`) and failure handling implemented.
+- [x] Part 3 RAG retrieval from the training split implemented, with a with/without-RAG evaluation script.
+- [x] Part 3 Colab demo notebook and narration script prepared.
 - [ ] P2.11 experiment evidence audited for exact prompts, effective parameters, and run IDs.
 - [x] P2.12 human response-quality scoring completed for initial 15-response sample.
+- [x] Part 4 handover, evidence map, and demo plan prepared; open items tracked in Section 8B.4.
 - [ ] Responsible-use risks and controls documented.
 - [ ] Final report, presentation, demo, and contribution statements completed.
 
