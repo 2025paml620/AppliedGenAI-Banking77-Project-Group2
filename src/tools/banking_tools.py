@@ -25,6 +25,15 @@ def block_card(card_last4: str) -> dict:
     return {"card_last4": card_last4, "status": "blocked"}
 
 
+def card_status(card_last4: str) -> dict:
+    """Return the current status of a known card in the local demo store."""
+    if not re.fullmatch(r"\d{4}", str(card_last4)):
+        raise ToolError("card_last4 must be exactly 4 digits.")
+    if card_last4 not in MOCK_CARDS:
+        raise ToolError("No card ending in those digits was found.")
+    return {"card_last4": card_last4, "status": MOCK_CARDS[card_last4]}
+
+
 def transaction_status(transaction_id: str) -> dict:
     """Return a fixed demonstration status for a known transaction ID."""
     if not re.fullmatch(r"TXN\d{4}", str(transaction_id)):
@@ -37,6 +46,7 @@ def transaction_status(transaction_id: str) -> dict:
 # name -> (function, required argument names)
 TOOLS = {
     "block_card": (block_card, {"card_last4"}),
+    "card_status": (card_status, {"card_last4"}),
     "transaction_status": (transaction_status, {"transaction_id"}),
 }
 
@@ -55,8 +65,9 @@ def run_tool(name: str, arguments: dict) -> dict:
 
 def describe_result(name: str, result: dict) -> str:
     """Turn a validated mock-tool result into a customer-facing demo message."""
-    """Final customer text, grounded in the tool result (demo only)."""
     if name == "block_card":
         return f"(Demo) Card ending {result['card_last4']} is now {result['status']}."
+    if name == "card_status":
+        return f"(Demo) Card ending {result['card_last4']} is {result['status']}."
     return (f"(Demo) Transaction {result['transaction_id']} at {result['merchant']} "
             f"for {result['amount']:.2f} is {result['status']}.")

@@ -84,4 +84,5 @@ def test_structured_prompt_includes_only_label_names_and_tool_contract():
 
     assert "lost_or_stolen_card" in prompt
     assert "block_card" in prompt
+    assert "card_status" in prompt
     assert "transaction_status" in prompt

@@ -6,7 +6,7 @@
 |---|---|---|
 | P4.1 Common repository | `README.md`, `requirements.txt`, `config/`, `src/`, `CONTRIBUTING.md` | In place; verify lock file matches the supported environment. |
 | P4.2 Interfaces | `CONTRIBUTING.md`, `reports/PART3_REPORT.md`, `src/structured/schema.py` | Contracts consolidated; owners should confirm shared interfaces. |
-| P4.3 Integrated pipeline | `src/structured/pipeline.py`, `run_part3.py`, Part 3 notebook | Model-to-validation-to-mock-tool path exists. Gradio `app.py` is a separate flow and currently does not execute tools; choose and present one canonical demo path. |
+| P4.3 Integrated pipeline | `src/structured/pipeline.py`, `scripts/run_pipeline.py`, Part 3 notebook, `app.py` | Model-to-validation-to-mock-tool path is available through the unified query/demo/suite CLI and Gradio app. The app also retains the prompt-only mode and RAG/non-RAG selector. |
 | P4.4 Run logging | `experiments/experiment_runs.jsonl`, `config/experiment_config.yaml` | Existing logs; audit historical run IDs/revisions/settings for completeness. |
 | P4.5 Consolidated results | `experiments/comparison_summary.md` and source CSV/JSON artifacts | Index and current metrics supplied; produce paired/full comparison after coverage audit. |
 | P4.6 Four-criteria evaluation | Intent metrics, manual review, JSON checks, safety artifacts | Evidence exists across different runs. No single integrated four-criterion run is checked in; execute notebook and report denominators. |

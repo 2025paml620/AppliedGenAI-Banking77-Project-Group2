@@ -31,6 +31,10 @@ INJECTION = re.compile(
     r"reveal (?:your |the )?(?:system prompt|hidden instructions)|"
     r"disable (?:the )?(?:safety|guardrails)|bypass (?:the )?(?:safety|guardrails))"
 )
+HARMFUL_BANKING_ACTION = re.compile(
+    r"(?i)\b(?:hack|break\s+into|exploit|compromise|steal|rob|siphon|drain|launder|embezzle)\b"
+    r".{0,100}\b(?:bank|banking|server|user|customer|account|money|funds|cash|payment|database|system)\b"
+)
 
 @dataclass(frozen=True)
 class SafetyResult:
@@ -46,12 +50,14 @@ def redact_sensitive(text: str) -> str:
 
 
 def check_input(query: str) -> SafetyResult:
-    """Block inputs containing recognized credentials or prompt-injection patterns."""
+    """Block recognized secrets, instruction overrides, and explicit banking abuse requests."""
     reasons = []
     if SECRET.search(query) or CARD.search(query):
         reasons.append("sensitive_input")
     if INJECTION.search(query):
         reasons.append("prompt_injection_pattern")
+    if HARMFUL_BANKING_ACTION.search(query):
+        reasons.append("harmful_banking_action")
     if reasons:
         return SafetyResult(INPUT_FALLBACK if "sensitive_input" in reasons else SAFE_FALLBACK,
                             "blocked_input", tuple(reasons))

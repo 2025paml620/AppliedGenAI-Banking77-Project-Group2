@@ -45,7 +45,7 @@ def create_evaluation_sample(
 
     if not insufficient.empty:
         raise ValueError(
-            "Some intents do not have enough test examples: "
+            "Some intents do not have enough examples in the test split: "
             f"{insufficient.to_dict()}"
         )
 

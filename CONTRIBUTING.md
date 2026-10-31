@@ -14,8 +14,8 @@
 - Dataset row: `sample_id`, `source_index`, `text`, `label`, `intent` (the final two are evaluation-only references).
 - Pipeline: `handle_query(query, allowed_intents, generate_fn, retriever=None, k=5)`; `generate_fn(prompt)` returns raw model text.
 - Structured model object: exactly `intent` (allowed label), `response` (non-empty string), `action_required` (boolean), `action` (null or `{tool, arguments}`).
-- Tools: `block_card(card_last4)` and `transaction_status(transaction_id)`, both backed by mock data.
-- Pipeline result: `query`, `status`, `intent`, `tool`, `tool_result`, `errors`, `raw_output`, `final_response`.
+- Tools: `block_card(card_last4)`, read-only `card_status(card_last4)`, and `transaction_status(transaction_id)`, all backed by mock data.
+- Pipeline result: `query`, `status`, `intent`, `tool`, `tool_result`, `errors`, `model_output` (unmodified completion), `raw_output` (structured output after any mandatory route correction), and `final_response`. Statuses include `ok`, `invalid_input`, `blocked_input`, `invalid_output`, `unsafe_output`, and `tool_error`.
 
 ## Reproducible changes
 

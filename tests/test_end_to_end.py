@@ -38,7 +38,7 @@ def test_end_to_end_tool_call_is_validated_and_grounded_in_tool_result():
     assert result["status"] == "ok"
     assert result["tool_result"]["status"] == "pending"
     assert "pending" in result["final_response"]
-    assert "Cafe Demo" in result["final_response"]
+    assert "Online Store Demo" in result["final_response"]
 
 
 def test_end_to_end_sensitive_input_stops_before_generation():
@@ -52,6 +52,19 @@ def test_end_to_end_sensitive_input_stops_before_generation():
     assert result["status"] == "blocked_input"
     assert result["raw_output"] is None
     assert result["final_response"]
+
+
+def test_end_to_end_empty_input_is_rejected_before_generation():
+    """Return a specific input error without invoking model generation for blank text."""
+    def should_not_generate(_prompt):
+        """Fail if the pipeline lets an empty query reach the model."""
+        raise AssertionError("Empty input should not reach generation")
+
+    result = handle_query("   ", LABELS, should_not_generate)
+
+    assert result["status"] == "invalid_input"
+    assert result["errors"] == ["empty_query"]
+    assert result["raw_output"] is None
 
 
 def test_end_to_end_invalid_json_cannot_reach_a_tool():

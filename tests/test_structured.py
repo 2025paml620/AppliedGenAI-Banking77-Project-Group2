@@ -41,7 +41,64 @@ def test_tool_flow_success():
     assert r["status"] == "ok" and "pending" in r["final_response"]
 
 
+def test_read_only_card_status_tool_flow(monkeypatch):
+    """Return a known mock card status and describe it as demonstration data."""
+    from src.tools.banking_tools import MOCK_CARDS
+
+    monkeypatch.setitem(MOCK_CARDS, "5678", "active")
+    action = {"tool": "card_status", "arguments": {"card_last4": "5678"}}
+    r = handle_query("Is my card ending 5678 active?", LABELS,
+                     gen(out(action_required=True, action=action)))
+
+    assert r["status"] == "ok"
+    assert r["tool_result"] == {"card_last4": "5678", "status": "active"}
+    assert "(Demo)" in r["final_response"]
+    assert "active" in r["final_response"]
+
+
+@pytest.mark.parametrize(
+    "query,expected_action,use_rag",
+    [
+        ("What is the status of transaction TXN1002?",
+         {"tool": "transaction_status", "arguments": {"transaction_id": "TXN1002"}}, True),
+        ("Please check the status of my demo card ending 5678.",
+         {"tool": "card_status", "arguments": {"card_last4": "5678"}}, False),
+    ],
+)
+def test_explicit_lookup_prompts_enforce_tool_routing_with_and_without_rag(
+    query, expected_action, use_rag, monkeypatch,
+):
+    """Enforce explicit lookup routing whether retrieval context is enabled or not."""
+    from src.tools.banking_tools import MOCK_CARDS
+
+    monkeypatch.setitem(MOCK_CARDS, "5678", "active")
+    model_json = out(action_required=False, action=None)
+    seen_prompts = []
+
+    class FakeRetriever:
+        """Provide one deterministic training example without loading embeddings."""
+
+        def retrieve(self, query, k=5):
+            """Return a label-matched mock example for the RAG prompt path."""
+            return [{"text": "similar lookup", "intent": "lost_or_stolen_card", "score": 1.0}]
+
+    result = handle_query(
+        query, LABELS,
+        lambda prompt: seen_prompts.append(prompt) or model_json,
+        retriever=FakeRetriever() if use_rag else None,
+    )
+
+    assert "Mandatory tool routing for this query" in seen_prompts[0]
+    assert result["model_output"] == model_json
+    assert result["tool"] == expected_action["tool"]
+    assert result["tool_result"] is not None
+    assert json.loads(result["raw_output"])["action"] == expected_action
+    assert json.loads(result["raw_output"])["action_required"] is True
+
+
 @pytest.mark.parametrize("name,args", [("transaction_status", {"transaction_id": "TXN9999"}),
+                                       ("card_status", {"card_last4": "9999"}),
+                                       ("card_status", {"card_last4": "56"}),
                                        ("block_card", {"card_last4": "12"}),
                                        ("block_card", {"card_last4": "1234", "extra": 1}),
                                        ("wire_money", {})])
