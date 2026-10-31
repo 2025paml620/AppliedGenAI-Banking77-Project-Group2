@@ -10,20 +10,25 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import logging
 import math
 import re
 from collections import Counter, defaultdict
 from pathlib import Path
+from src.logging_config import configure_logging
 
 try:
     import yaml
 except ImportError as exc:
     raise SystemExit('PyYAML is required: python -m pip install pyyaml') from exc
 
+logger = logging.getLogger(__name__)
+
 
 def read_csv(path: Path):
     """Read a CSV as dictionaries, returning an empty list when it is absent."""
     if not path.exists():
+        logger.warning("Evaluation input file is missing and will be skipped: %s", path)
         print(f'[SKIP] Missing file: {path}')
         return []
     with path.open('r', encoding='utf-8-sig', newline='') as f:
@@ -265,6 +270,7 @@ def evaluate_quality(baseline_rows, prompt_rows, manual_rows, cfg, out):
 
 def main():
     """Load configured artifacts, run each offline evaluation, and save summaries."""
+    configure_logging()
     parser = argparse.ArgumentParser(description='Evaluate BANKING77 Part 2 CSV outputs (P2.12).')
     parser.add_argument('--config', default='config/evaluation_config.yaml')
     args = parser.parse_args()
@@ -299,6 +305,8 @@ def main():
         print(f'  {criterion}: {metrics["status"]}')
     print(f'Outputs: {out}')
     print('Summary:', out / 'evaluation_summary.json')
+    logger.info("Part 2 evaluation complete; criterion statuses=%s", {key: value["status"] for key, value in results.items()})
+    logger.info("Saved consolidated evaluation artifacts under %s", out)
 
 
 if __name__ == '__main__':

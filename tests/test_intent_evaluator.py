@@ -1,3 +1,5 @@
+"""Unit tests for BANKING77 intent parsing, scoring, and saved results."""
+
 import unittest
 import tempfile
 from pathlib import Path

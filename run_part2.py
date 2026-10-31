@@ -4,6 +4,7 @@ Do not supply ground-truth intent labels to the model.
 """
 import argparse
 import json
+import logging
 import random
 from pathlib import Path
 import pandas as pd
@@ -12,10 +13,14 @@ from src.model.llm_baseline import load_model, generate_response, MODEL_ID
 from src.model.decoding import DECODING
 from src.prompts.templates import build_prompt
 from src.safety.guardrails import guarded_generate, redact_sensitive
+from src.logging_config import configure_logging
+
+logger = logging.getLogger(__name__)
 
 
 def main():
     """Run the configured baseline, prompt, and decoding comparison experiments."""
+    configure_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument("--evaluation_csv", required=True)
     parser.add_argument("--limit", type=int, default=10)
@@ -29,6 +34,7 @@ def main():
     if args.diverse_intents and "intent" in df.columns:
         df = df.groupby("intent", sort=True).head(1)
     df = df.head(args.limit)
+    logger.info("Preparing Part 2 comparisons for %d evaluation queries", len(df))
     random.seed(42)
     torch.manual_seed(42)
     model, tokenizer = load_model()
@@ -78,6 +84,8 @@ def main():
     (out / "safety_summary.json").write_text(json.dumps({"status_counts": counts}, indent=2), encoding="utf-8")
     print(f"Saved {len(baseline_rows)} baseline rows, {len(prompt_rows)} prompt rows and {len(decoding_rows)} decoding rows")
     print("Safety statuses:", counts)
+    logger.info("Saved baseline, prompt, decoding, run-log, and safety-summary artifacts to %s", out)
+    logger.info("Safety status counts: %s", counts)
 
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@ Run from project root: python -m scripts.run_p2_5 --limit 3
 """
 import argparse
 import json
+import logging
 import re
 from pathlib import Path
 import pandas as pd
@@ -10,6 +11,9 @@ import torch
 from src.model.llm_baseline import load_model, generate_response, MODEL_ID
 from src.prompts.templates import build_zero_shot_intent_response_prompt
 from src.safety.guardrails import guarded_generate, redact_sensitive
+from src.logging_config import configure_logging
+
+logger = logging.getLogger(__name__)
 
 
 def parse_output(text):
@@ -29,6 +33,7 @@ def parse_output(text):
 
 def main():
     """Run the small guarded zero-shot verification and save its row-level results."""
+    configure_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument('--evaluation_csv', default='data/evaluation_sample.csv')
     parser.add_argument('--limit', type=int, default=3)
@@ -46,6 +51,7 @@ def main():
     if args.diverse_intents:
         df = df.groupby('intent', sort=True).head(1)
     torch.manual_seed(42)
+    logger.info("Loading the model for a P2.5 run of up to %d queries", args.limit)
     model, tokenizer = load_model()
     records = []
     for index, row in df.head(args.limit).iterrows():
@@ -83,6 +89,9 @@ def main():
             'ground_truth_intent': str(row['intent']),
             'intent_correct': valid and predicted == str(row['intent']),
         })
+        logger.info("P2.5 sample %s: safety=%s valid_json=%s intent_correct=%s",
+                    str(row.get('sample_id', index)), result.status, valid,
+                    valid and predicted == str(row['intent']))
     path = Path('experiments/p2_5_zero_shot.csv')
     path.parent.mkdir(parents=True, exist_ok=True)
     pd.DataFrame(records).to_csv(path, index=False)
@@ -90,6 +99,10 @@ def main():
     print(f'Valid structured outputs: {sum(r["valid_structured_output"] for r in records)}/{len(records)}')
     print(f'Correct intents: {sum(r["intent_correct"] for r in records)}/{len(records)}')
     print(f'Strict JSON outputs: {sum(r["strict_json_valid"] for r in records)}/{len(records)}')
+    logger.info("P2.5 complete: valid_structured=%d/%d correct_intents=%d/%d",
+                sum(r["valid_structured_output"] for r in records), len(records),
+                sum(r["intent_correct"] for r in records), len(records))
+    logger.info("Saved P2.5 verification results to %s", path)
 
 
 if __name__ == '__main__':

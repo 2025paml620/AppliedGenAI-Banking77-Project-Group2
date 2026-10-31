@@ -1,3 +1,5 @@
+"""Unit tests for structured output validation and mock tool behavior."""
+
 import json
 import pytest
 from src.structured.schema import validate_output

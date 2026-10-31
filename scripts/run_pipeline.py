@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import logging
 import platform
 import uuid
 from datetime import datetime, timezone
@@ -24,6 +25,8 @@ from scripts.run_model_test_suite import (
 )
 from src.logging_config import configure_logging
 from src.model.llm_baseline import MODEL_ID, MODEL_REVISION, load_model
+
+logger = logging.getLogger(__name__)
 
 
 def _make_cases(mode: str, query: str | None, suite_path: Path) -> list[dict[str, str]]:
@@ -102,6 +105,8 @@ def main(argv: list[str] | None = None) -> int:
     if not cases:
         parser.error("No cases selected")
 
+    logger.info("Starting %s pipeline run with %d case(s), retrieval=%s",
+                args.mode, len(cases), "RAG" if args.rag else "Non-RAG")
     intents = load_allowed_intents(args.intents_csv)
     retriever = None
     if args.rag:
@@ -140,6 +145,7 @@ def main(argv: list[str] | None = None) -> int:
 
     run_dir = _save_run(args.output_dir, results, run)
     print(f"Results: {run_dir}")
+    logger.info("Saved pipeline run %s with %d case(s) to %s", run_id, len(results), run_dir)
     for record in results:
         print(f"{record['query_id']} [{record['status']}/{record['result']}]: {record['final_response']}")
     return 0

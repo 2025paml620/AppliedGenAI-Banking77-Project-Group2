@@ -261,6 +261,8 @@ def run_request(
         else:
             result, safety, tool = run_part2(question, variant, decoding, temperature, top_p)
             details = tool.pop("details", {})
+        logger.info("Assistant request completed: mode=%s status=%s tool=%s",
+                    mode, result["status"], result["tool"] or "none")
         return _ui_outputs(result, safety, tool, details)
     except Exception as exc:
         logger.exception("Assistant request failed (%s)", type(exc).__name__)

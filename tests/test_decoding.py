@@ -1,4 +1,6 @@
 
+"""Unit tests for supported text-generation decoding configurations."""
+
 import unittest
 from src.model.decoding import DECODING
 

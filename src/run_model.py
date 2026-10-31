@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import logging
 import sys
 from pathlib import Path
 
@@ -12,6 +13,7 @@ from src.logging_config import configure_logging
 from src.model.llm_baseline import generate_response, load_model
 from src.structured.pipeline import handle_query
 
+logger = logging.getLogger(__name__)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -53,6 +55,7 @@ def main() -> int:
     public_result = {key: result[key] for key in (
         "status", "intent", "tool", "tool_result", "errors", "final_response"
     )}
+    logger.info("Query pipeline completed: status=%s tool=%s", result["status"], result["tool"] or "none")
     print(json.dumps(public_result, ensure_ascii=False, indent=2))
     return 0 if result["status"] in {"ok", "blocked_input", "invalid_input"} else 1
 

@@ -1,4 +1,7 @@
+"""Capture the pinned model, tokenizer, library, and runtime configuration."""
+
 import json
+import logging
 import platform
 import sys
 from datetime import datetime, timezone
@@ -13,16 +16,21 @@ import tokenizers
 from src.model.llm_baseline import MODEL_ID
 from src.model.decoding import DECODING
 from huggingface_hub import model_info
+from src.logging_config import configure_logging
+
+logger = logging.getLogger(__name__)
 
 
 def main():
     """Collect model, tokenizer, runtime, and generation metadata for reproducibility."""
+    configure_logging()
     output_dir = Path("experiments")
     output_dir.mkdir(parents=True, exist_ok=True)
 
     from transformers import AutoConfig, AutoTokenizer
 
     print("Reading model and tokenizer configuration...")
+    logger.info("Reading model configuration and tokenizer metadata for %s", MODEL_ID)
 
     model_config = AutoConfig.from_pretrained(MODEL_ID)
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
@@ -96,6 +104,7 @@ def main():
 
     print(f"\nModel configuration saved: {output_file}")
     print(json.dumps(config, indent=2, default=str))
+    logger.info("Saved model configuration and runtime metadata to %s", output_file)
 
 
 if __name__ == "__main__":

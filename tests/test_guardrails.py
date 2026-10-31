@@ -1,3 +1,5 @@
+"""Unit tests for input/output safety checks and sensitive-data redaction."""
+
 import unittest
 from src.safety.guardrails import check_input, check_output, guarded_generate, redact_sensitive
 
