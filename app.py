@@ -341,11 +341,11 @@ with gr.Blocks(
         line-height: 1.55 !important;
     }
     .safety-banner {
-        border: 1px solid #b42318 !important;
-        border-left: 7px solid #b42318 !important;
+        border: 1px solid #d97706 !important;
+        border-left: 7px solid #d97706 !important;
         border-radius: 12px !important;
-        background-color: #fff1f0 !important;
-        color: #7a271a !important;
+        background-color: #fffbeb !important;
+        color: #78350f !important;
         padding: 14px 18px !important;
         margin: 10px 0 20px !important;
         font-size: 1.02rem !important;
@@ -353,7 +353,7 @@ with gr.Blocks(
         font-weight: 650 !important;
     }
     .safety-banner * {
-        color: #7a271a !important;
+        color: #78350f !important;
         background-color: transparent !important;
     }
     .safety-banner p {
@@ -395,6 +395,30 @@ with gr.Blocks(
     .input-panel [role="radio"] {
         color: #334155 !important;
     }
+    .input-panel label[data-testid$="-radio-label"],
+    .input-panel label[data-testid$="-radio-label"].selected {
+        background: transparent !important;
+        border: 1px solid transparent !important;
+        border-radius: 6px !important;
+        box-shadow: none !important;
+        color: #172033 !important;
+        padding: 6px 8px !important;
+    }
+    .input-panel label[data-testid$="-radio-label"] input[type="radio"] {
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        width: 16px !important;
+        height: 16px !important;
+        min-width: 16px !important;
+        border: 2px solid #94a3b8 !important;
+        border-radius: 50% !important;
+        background: #ffffff !important;
+        margin: 0 8px 0 0 !important;
+    }
+    .input-panel label[data-testid$="-radio-label"] input[type="radio"]:checked {
+        border-color: #16803c !important;
+        background: radial-gradient(circle, #16803c 0 4px, #ffffff 4.5px 100%) !important;
+    }
     .input-panel [role="option"] {
         background-color: #ffffff !important;
         color: #172033 !important;
@@ -405,16 +429,23 @@ with gr.Blocks(
         border-radius: 10px !important;
         font-size: 1rem !important;
         font-weight: 650 !important;
+        background: #16803c !important;
+        border-color: #16803c !important;
+        color: #ffffff !important;
+    }
+    .generate-button:hover {
+        background: #116530 !important;
+        border-color: #116530 !important;
     }
     .tool-action-panel {
-        border: 2px solid #087e5b !important;
-        border-left: 7px solid #087e5b !important;
+        border: 1px solid #cbd5e1 !important;
+        border-left: 5px solid #64748b !important;
         border-radius: 14px !important;
-        background: linear-gradient(135deg, #e9f8f1, #eef5ff) !important;
-        box-shadow: 0 5px 18px rgba(8, 126, 91, .12) !important;
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9) !important;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, .06) !important;
     }
     .tool-action-panel > div:first-child {
-        color: #075e45 !important;
+        color: #334155 !important;
         font-weight: 700 !important;
         font-size: 1.06rem !important;
     }
@@ -429,7 +460,9 @@ with gr.Blocks(
         elem_classes=["app-title"],
     )
     gr.Markdown(f"**SAFETY NOTICE**  \n{SAFETY_NOTICE}", elem_classes=["safety-banner"])
-    with gr.Row(equal_height=True):
+    # Keep the request column at its natural content height; the response panels
+    # can grow independently as JSON output expands.
+    with gr.Row(equal_height=False):
         with gr.Column(scale=1, min_width=400, elem_classes=["input-panel"]):
             gr.Markdown("## Customer request", elem_classes=["section-heading"])
             mode = gr.Radio(
